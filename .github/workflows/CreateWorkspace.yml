@@ -1,0 +1,23 @@
+Inputs: 
+- name: input_1
+  required: true
+- name: input_2
+  required: true
+- name: input_3
+  required: true
+
+
+jobs:
+  manual-input:
+    name: My Job
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Print Inputs
+      env:
+        INPUT_1: ${{ inputs.input_1 }}
+        INPUT_2: ${{ inputs.input_2 }}
+        INPUT_3: ${{ inputs.input_3 }}
+      run: |
+        echo "Input 1: $INPUT_1"
+        echo "Input 2: $INPUT_2"
+        echo "Input 3: $INPUT_3"
