@@ -1,16 +1,21 @@
 name: A pipeline
 
+on: 
+  workflow_dispatch:
+    inputs:
+      input_1:
+        description: 'Input 1'
+        required: true
+        default: 'default value'
+      input_2:
+        description: 'Input 2'
+        required: true
+        default: 'default value'
+      input_3:
+        description: 'Input 3'
+        required: true
+        default: 'default value'
 
-
-on:
- workflow_dispatch:
-  inputs: 
-  - name: input_1
-    required: true
-  - name: input_2
-    required: true
-  - name: input_3
-    required: true
 
 
 jobs:
