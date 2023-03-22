@@ -17,7 +17,7 @@ Cloning or forking this repo.
 ### 0 - Create Resources
 
 
-The following command will create a resource group with all required resources. The resource group will be named "rg-amlv2-<prefix>-<postfix>" and the resources will be named "<prefix>-<postfix>-<env>-<resource>".
+The following command will create a resource group with all required resources. The resource group will be named `rg-amlv2-<prefix>-<postfix>` and the resources will be named `<prefix>-<postfix>-<env>-<resource>`.
 
 Once the repo is cloned you can run the following command to create the resources, alternatively you could use exsiting azure machine learning workspace. 
 
@@ -25,14 +25,14 @@ Once the repo is cloned you can run the following command to create the resource
 > this command needs to run from the infrastructure folder
 
 ```cmd
-az deployment sub create --name <deployment name> --location <location of the service> --template-file main.bicep --parameters location=northeurope prefix=ydamlv2 postfix=yd2023 env=dev
+az deployment sub create --name <deployment-name> --location <location-of-the-service> --template-file main.bicep --parameters location=northeurope prefix=ydamlv2 postfix=yd2023 env=dev
 ```
 
 Note for later use the following values:
 
-- resource_group: <The resource group of aml>
+- resource_group: `<The resource group of aml>`
 
-- workspace_name: <Azure machine learning workspace name>
+- workspace_name: `<Azure machine learning workspace name>`
 
 ### 0.1 - CLI Setup / Update
 
@@ -47,6 +47,7 @@ az extension update -n ml
 az extension list
 
 ```
+
 ### 1 - Connect to the workspace
 
 The following commands connects your current session to the aml workspace created in the previous step, you could connect to an existing workspace as well, provide the name and the resource group of the workspace. Ensure that you are connected to the correct subscription. 
