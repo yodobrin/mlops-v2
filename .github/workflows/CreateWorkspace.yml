@@ -1,6 +1,6 @@
 name: A pipeline
 
-Inputs: 
+inputs: 
 - name: input_1
   required: true
 - name: input_2
@@ -8,8 +8,7 @@ Inputs:
 - name: input_3
   required: true
 
-on:
- workflow_dispatch:
+on: manual
 
 
 jobs:
