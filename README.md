@@ -1,5 +1,7 @@
 # mlops-v2
 
+> This repository was "forked" from this solution [accelerator](https://github.com/Azure/mlops-v2).
+
 Thinking about MLOps? This repo is a good starting point to get you started with MLOps. The first step is to understand the moving parts of MLOps.
 The approach currently leverages few key areas:
 
@@ -25,7 +27,7 @@ Once the repo is cloned you can run the following command to create the resource
 > this command needs to run from the infrastructure folder
 
 ```azurecli
-az deployment sub create --name <deployment-name> --location <location-of-the-service> --template-file main.bicep --parameters location=northeurope prefix=ydamlv2 postfix=yd2023 env=dev
+az deployment sub create --name <deployment-name> --location <location-of-the-service> --template-file main.bicep --parameters prefix=ydamlv2 postfix=yd2023 env=dev
 ```
 
 Note for later use the following values:
@@ -100,7 +102,7 @@ az ml compute create --name cpu-cluster  --type amlcompute  --size Standard_DS3_
 
 ### 4 - Submit a training job (prep, train, evaluate, model registeration)
 
-Now lets run a training job, submiting the job and then opening the web ui to monitor it.
+Now lets run a training job, submiting the job and then opening the web ui to monitor it. (This would work on mac/linux)
 
 
 ```azurecli
@@ -108,9 +110,17 @@ Now lets run a training job, submiting the job and then opening the web ui to mo
 run_id=$(az ml job create -f mlops/azureml/train/pipeline.yml --query name -o tsv)
 
 az ml job show -n $run_id --web
+```
 
+For windows, you can use the following __powershell__ command:
+
+```powershell
+
+$run_id = az ml job create -f mlops/azureml/train/pipeline.yml --query name -o tsv  
+az ml job show -Name $run_id --web  
 
 ```
+
 ### 5 - Deploy the model
 
 So, we called a pipeline that perform few activities such as preprocessing, training and registering the model. now the model is registered. The next step would be to deploy an online (not batch) the model. We first create an end-point. you should verify it does not exist before you run this.
