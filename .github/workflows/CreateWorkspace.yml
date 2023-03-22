@@ -1,4 +1,4 @@
-name: A pipeline
+name: Workspace Creation - Demo Pipeline 
 
 on: 
   workflow_dispatch:

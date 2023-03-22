@@ -1,7 +1,18 @@
 # mlops-v2
-first steps in mlops
+
+Thinking about MLOps? This repo is a good starting point to get you started with MLOps. The first step is to understand the moving parts of MLOps.
+The approach currently leverages few key areas:
+
+- Azure Machine Learning (AML) CLI V2 (az ml) - see our formal docs [here](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-configure-cli?tabs=public)
+
+- DevOps pipeline or GitHub actions
+
+- AML CLI (V2) YAML shcema - see our [docs](https://learn.microsoft.com/en-us/azure/machine-learning/reference-yaml-overview)
+
 
 ## Prerequisites
+
+Cloning or forking this repo.
 
 ### 0 - Create Resources
 
@@ -127,6 +138,7 @@ az ml online-endpoint update --name taxi-online-yd2023dev --traffic "taxi-online
 
 ### 6 - Test the model
 
+The scoring code is generated during the training of the model. __TBD: how to get the scoring code.__
 lets test it
 
 ```azurecli
