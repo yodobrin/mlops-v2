@@ -8,7 +8,8 @@ inputs:
 - name: input_3
   required: true
 
-on: manual
+on:
+ workflow_dispatch:
 
 
 jobs:
