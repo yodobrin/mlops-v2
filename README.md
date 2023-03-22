@@ -15,11 +15,10 @@ Cloning or forking this repo.
 
 ### 0 - Create Resources
 
-The following command will create a resource group with all required resources. The resource group will be named "rg-amlv2-<prefix>-<postfix>" and the resources will be named "<prefix>-<postfix>-<env>-<resource>".
+The following command will create a resource group with all required resources. The resource group will be named `rg-amlv2-<prefix>-<postfix>` and the resources will be named `<prefix>-<postfix>-<env>-<resource>`.
 
 Once the repo is cloned you can run the following command to create the resources, alternatively you could use existing azure machine learning workspace.
 
-```azurecli
 
 > this command needs to run from the infrastructure folder
 
@@ -29,9 +28,9 @@ az deployment sub create --name <deployment name> --location <location of the se
 
 Note for later use the following values:
 
-- resource_group: < The resource group of aml >
+- resource_group: `<The resource group of aml>`
 
-- workspace_name: < Azure machine learning workspace name > 
+- workspace_name: `<Azure machine learning workspace name>`
 
 ### 0.1 - CLI Setup / Update
 
@@ -138,7 +137,7 @@ az ml online-endpoint update --name taxi-online-sf2023dev --traffic "taxi-online
 The scoring code is generated during the training of the model. __TBD: how to get the scoring code.__
 lets test it
 
-```azurecli
+```cli
 
 az ml online-endpoint invoke -n <your endpoint name> --deployment-name taxi-online-dp --request-file data/taxi-request.json
 ```
