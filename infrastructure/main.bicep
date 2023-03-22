@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-param location string = 'westus2'
+param location string = deployment().location
 param prefix string
 param postfix string
 param env string 
