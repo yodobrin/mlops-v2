@@ -24,7 +24,7 @@ Once the repo is cloned you can run the following command to create the resource
 
 > this command needs to run from the infrastructure folder
 
-```cmd
+```azurecli
 az deployment sub create --name <deployment-name> --location <location-of-the-service> --template-file main.bicep --parameters location=northeurope prefix=ydamlv2 postfix=yd2023 env=dev
 ```
 
