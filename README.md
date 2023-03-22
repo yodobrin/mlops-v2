@@ -21,11 +21,10 @@ The following command will create a resource group with all required resources. 
 
 Once the repo is cloned you can run the following command to create the resources, alternatively you could use exsiting azure machine learning workspace. 
 
-```azurecli
 
 > this command needs to run from the infrastructure folder
 
-```azurecli
+```cmd
 az deployment sub create --name <deployment name> --location <location of the service> --template-file main.bicep --parameters location=northeurope prefix=ydamlv2 postfix=yd2023 env=dev
 ```
 
@@ -141,7 +140,7 @@ az ml online-endpoint update --name taxi-online-yd2023dev --traffic "taxi-online
 The scoring code is generated during the training of the model. __TBD: how to get the scoring code.__
 lets test it
 
-```azurecli
+```cli
 
 az ml online-endpoint invoke -n taxi-online-yd2023dev --deployment-name taxi-online-dp --request-file data/taxi-request.json
 ```
