@@ -1,15 +1,16 @@
 name: A pipeline
 
-inputs: 
-- name: input_1
-  required: true
-- name: input_2
-  required: true
-- name: input_3
-  required: true
+
 
 on:
  workflow_dispatch:
+  inputs: 
+  - name: input_1
+    required: true
+  - name: input_2
+    required: true
+  - name: input_3
+    required: true
 
 
 jobs:
