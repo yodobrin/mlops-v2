@@ -108,16 +108,18 @@ jobs:
   read-yaml:
     runs-on: ubuntu-latest
     outputs:
-      location: ${{ steps.location.outputs.location }}
-      namespace: ${{  steps.outputs.namespace }}
-      postfix: ${{  steps.outputs.postfix }}
-      environment: ${{  steps.outputs.environment }}
-      enable_aml_computecluster: ${{  steps.outputs.enable_aml_computecluster }}
-      enable_monitoring: ${{  steps.outputs.enable_monitoring }}
-      resource_group: ${{  steps.outputs.resource_group }}
-      aml_workspace: ${{  steps.outputs.aml_workspace }}
-      # bep: ${{  steps.outputs.bep }}
-      # oep: ${{  steps.outputs.oep }}
+      location: ${{ steps.variables.outputs.location }}
+      namespace: ${{  steps.variables.outputs.namespace }}
+      postfix: ${{  steps.variables.outputs.postfix }}
+      environment: ${{  steps.variables.outputs.environment }}
+      enable_aml_computecluster: ${{  steps.variables.outputs.enable_aml_computecluster }}
+      enable_monitoring: ${{  steps.variables.outputs.enable_monitoring }}
+      resource_group: ${{  steps.variables.outputs.resource_group }}
+      aml_workspace: ${{  steps.variables.outputs.aml_workspace }}
+      # bep: ${{  steps.variables.outputs.bep }}
+      # oep: ${{  steps.variables.outputs.oep }}
     steps:
-      - id: location
+      - id: variables
         run: echo "location=inputs.location" >> $GITHUB_OUTPUT
+         | echo "namespace=inputs.namespace" >> $GITHUB_OUTPUT
+         echo "postfix=inputs.postfix" >> $GITHUB_OUTPUT
