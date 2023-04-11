@@ -108,9 +108,9 @@ jobs:
   read-yaml:
     runs-on: ubuntu-latest
     outputs:
-      location: ${{  steps.read_action_js.outputs.location }}
-      namespace: ${{  steps.read_action_js.outputs.namespace }}
-      postfix: ${{  steps.read_action_js.outputs.postfix }}
+      location: ${{ outputs.location }}
+      namespace: ${{  outputs.namespace }}
+      postfix: ${{  outputs.postfix }}
       environment: ${{  steps.read_action_js.outputs.environment }}
       enable_aml_computecluster: ${{  steps.read_action_js.outputs.enable_aml_computecluster }}
       enable_monitoring: ${{  steps.read_action_js.outputs.enable_monitoring }}
