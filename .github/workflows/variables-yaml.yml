@@ -109,18 +109,19 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       location: ${{ steps.outputs.location }}
-      namespace: ${{  outputs.namespace }}
-      postfix: ${{  outputs.postfix }}
-      environment: ${{  steps.read_action_js.outputs.environment }}
-      enable_aml_computecluster: ${{  steps.read_action_js.outputs.enable_aml_computecluster }}
-      enable_monitoring: ${{  steps.read_action_js.outputs.enable_monitoring }}
-      resource_group: ${{  steps.read_action_js.outputs.resource_group }}
-      aml_workspace: ${{  steps.read_action_js.outputs.aml_workspace }}
-      # bep: ${{  steps.read_action_js.outputs.bep }}
-      # oep: ${{  steps.read_action_js.outputs.oep }}
+      namespace: ${{  steps.outputs.namespace }}
+      postfix: ${{  steps.outputs.postfix }}
+      environment: ${{  steps.outputs.environment }}
+      enable_aml_computecluster: ${{  steps.outputs.enable_aml_computecluster }}
+      enable_monitoring: ${{  steps.outputs.enable_monitoring }}
+      resource_group: ${{  steps.outputs.resource_group }}
+      aml_workspace: ${{  steps.outputs.aml_workspace }}
+      # bep: ${{  steps.outputs.bep }}
+      # oep: ${{  steps.outputs.oep }}
     steps:
       - name: Checking out repo
         uses: actions/checkout@v2
       - name: Echo step output
         id: outputs
         run: echo "The location is ${{ outputs.location }}"
+         | echo "The namespace is ${{ outputs.namespace }}"
