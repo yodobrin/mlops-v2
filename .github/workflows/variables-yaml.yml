@@ -120,4 +120,4 @@ jobs:
       # oep: ${{  steps.variables.outputs.oep }}
     steps:
         - id: variables
-          run: echo "location=$inputs.location" >> $GITHUB_OUTPUT
+          run: echo The location is ${{ inputs.location }}
