@@ -124,4 +124,4 @@ jobs:
       - name: Echo step output
         id: outputs
         run: echo "The location is ${{needs.set-variables.outputs.location }}"
-         | echo "The namespace is ${{ outputs.namespace }}"
+         | echo "The namespace is ${{ needs.set-variables.outputs.namespace }}"
