@@ -25,7 +25,6 @@ on:
       location:
         description: "The resource group to use"
         default: 'northeurope'
-        required: true
         type: string
       namespace:
         description: "Namespace of the resources"
