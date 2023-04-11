@@ -29,47 +29,38 @@ on:
       namespace:
         description: "Namespace of the resources"
         default: "spmlopsv2"
-        required: true
         type: string
       postfix:
         description: "Postfix for the resource names"
         default: 4200
-        required: true
         type: number
       environment:
         description: "Environment"
         default: "dev"
-        required: true
         type: string
       enable_aml_computecluster:
         description: "Boolean to decide whether to deploy an AML compute cluster or not"
         default: true
-        required: true
         type: boolean
       enable_monitoring:
         description: "Boolean to decide whether to enable monitoring"
         default: false
-        required: true
         type: boolean
       resource_group:
         description: "The resource group to use"
         default: rg-$(namespace)-$(postfix)$(environment)
-        required: true
         type: string
       aml_workspace:
         description: "The aml_workspace to use"
         default: mlw-$(namespace)-$(postfix)$(environment)
-        required: true
         type: string
       bep:
         description: "The batch endpoint"
         default: bep-$(namespace)-$(postfix)$(environment)
-        required: true
         type: string
       oep:
         description: "The online endpoint"
         default: oep-$(namespace)-$(postfix)$(environment)
-        required: true
         type: string
     outputs:
       location:
