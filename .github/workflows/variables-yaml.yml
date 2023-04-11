@@ -119,7 +119,5 @@ jobs:
       # bep: ${{  steps.variables.outputs.bep }}
       # oep: ${{  steps.variables.outputs.oep }}
     steps:
-      - name: Set Variables
-        id: variables
-        run:
-         echo "::set-output name=location::${{ inputs.location }}"
+        - id: variables
+          run: echo "location=$inputs.location" >> $GITHUB_OUTPUT
