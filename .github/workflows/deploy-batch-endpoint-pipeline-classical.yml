@@ -4,9 +4,7 @@ on:
   workflow_dispatch:
 jobs:
   get-config:
-      uses: Azure/mlops-templates/.github/workflows/read-yaml.yml@main
-      with:
-        file_name: config-infra-prod.yml
+      uses: ./variables-yaml.yml
   create-compute:
       needs: get-config
       uses: Azure/mlops-templates/.github/workflows/create-compute.yml@main
