@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 jobs:
   get-config:
-      uses: ./variables-yaml.yml
+      uses: ./.github/workflows/variables-yaml.yml
   create-compute:
       needs: get-config
       uses: Azure/mlops-templates/.github/workflows/create-compute.yml@main
