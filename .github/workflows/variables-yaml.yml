@@ -108,7 +108,7 @@ jobs:
   read-yaml:
     runs-on: ubuntu-latest
     outputs:
-      location: ${{ steps.outputs.location }}
+      location: ${{ steps.outputs.location.location }}
       namespace: ${{  steps.outputs.namespace }}
       postfix: ${{  steps.outputs.postfix }}
       environment: ${{  steps.outputs.environment }}
