@@ -2,6 +2,7 @@ name: deploy-batch-endpoint-pipeline
 
 on: 
   workflow_dispatch:
+  push:
 jobs:
   get-config:
       uses: ./.github/workflows/variables-yaml.yml
