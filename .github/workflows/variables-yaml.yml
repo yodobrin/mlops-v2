@@ -120,6 +120,5 @@ jobs:
       # oep: ${{  steps.variables.outputs.oep }}
     steps:
       - id: variables
-        run: echo "location=inputs.location" >> $GITHUB_OUTPUT
-         | echo "namespace=inputs.namespace" >> $GITHUB_OUTPUT
-         echo "postfix=inputs.postfix" >> $GITHUB_OUTPUT
+      - run:
+         echo "::set-output name=location::${{ inputs.location }}"
