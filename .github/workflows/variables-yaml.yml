@@ -119,8 +119,5 @@ jobs:
       # bep: ${{  steps.outputs.bep }}
       # oep: ${{  steps.outputs.oep }}
     steps:
-      - name: Checking out repo
-        uses: actions/checkout@v2
-      - name: Echo step output
       - id: location
         run: echo "location=inputs.location" >> $GITHUB_OUTPUT
