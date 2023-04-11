@@ -1,4 +1,4 @@
-name: read-yaml
+name: set-variables
   #      # Global
   # ap_vm_image: ubuntu-20.04
 
@@ -123,5 +123,5 @@ jobs:
         uses: actions/checkout@v2
       - name: Echo step output
         id: outputs
-        run: echo "The location is ${{ outputs.location }}"
+        run: echo "The location is ${{needs.set-variables.outputs.location }}"
          | echo "The namespace is ${{ outputs.namespace }}"
