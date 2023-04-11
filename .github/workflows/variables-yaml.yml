@@ -119,6 +119,7 @@ jobs:
       # bep: ${{  steps.variables.outputs.bep }}
       # oep: ${{  steps.variables.outputs.oep }}
     steps:
-      - id: variables
-      - run:
+      - name: Set Variables
+        id: variables
+        run:
          echo "::set-output name=location::${{ inputs.location }}"
