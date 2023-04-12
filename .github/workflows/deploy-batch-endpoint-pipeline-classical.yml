@@ -5,7 +5,7 @@ on:
   push:
 jobs:
   get-config:
-      uses: ./.github/workflows/variables-yaml.yml
+      uses: ./.github/workflows/variables.yml
   create-compute:
       needs: get-config
       uses: ./.github/workflows/create-compute.yml
