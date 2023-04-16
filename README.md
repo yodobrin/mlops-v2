@@ -11,7 +11,7 @@ The approach currently leverages few key areas:
 
 - AML CLI (V2) YAML schema - see our [docs](https://learn.microsoft.com/azure/machine-learning/reference-yaml-overview)
 
-## Prerequisites
+## Prerequisites & Setup
 
 Cloning or forking this repo.
 
@@ -175,3 +175,44 @@ base_url=<URL of the online/batch end-point>
 api_key=<API key>
 
 ```
+
+## Working with multiple models
+
+It is a common practice to have multiple models for different scenarios. Each of these models will have diffrent code, enviorment, compute, etc. In this section we will see how to work with multiple models.
+
+### Directory structure
+
+#### Model specific code
+
+Your model code should be hosted under the ```data-science``` folder. The folder structure is as follows:
+
+```bash
+data-science/  
+│  
+├── models/  
+│   ├── model1/  
+│   │   ├── code/  
+│   │   │   ├── train.py  
+│   │   │   └── prep.py
+│   │   │   └── evaluate.py
+│   │   │   └── register.py 
+│   │   ├── environment/  
+│   │   │   └── model1_environment_conda.yml  
+│   │   │   └── model1_environment_docker.yml  
+│   │   └── README.md  
+│   │  
+│   ├── model2/  
+│   │   ├── code/  
+│   │   │   ├── train.py  
+│   │   │   └── prep.py
+│   │   │   └── evaluate.py
+│   │   │   └── register.py 
+│   │   ├── environment/  
+│   │   │   └── model2_environment.yml  
+│   │   └── README.md  
+│   │  
+│   └── ...  
+│  
+└── ...  
+```
+
