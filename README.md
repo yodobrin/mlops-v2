@@ -76,12 +76,6 @@ az ml environment create --file mlops/azureml/train/train-env.yml
 
 ```
 
-We could also use a conda env (not docker) - decide on an approach and leverage it.
-
-```azurecli
-az ml environment create --name taxi-train-env --file mlops/azureml/train/train-env.yml
-```
-
 ### 3 - Create a compute
 
 Now lets create the compute (in case it was not created before) if the cluster is already created you can skip this step (it wont create a second one though)
@@ -216,3 +210,35 @@ data-science/
 └── ...  
 ```
 
+#### Model specific deployment
+
+The deployment code should be hosted under the ```mlops/azureml``` folder. The folder structure is as follows:
+
+```bash
+mlops/
+│
+├── azureml/
+│   ├── deploy/
+│   │   ├── batch/
+│   │   │   ├── model1_batch-deployment.yml
+│   │   │   ├── model1_batch-endpoint.yml
+│   │   │   ├── model2_batch-deployment.yml
+│   │   │   ├── model2_batch-endpoint.yml
+│   │   │   └── ...
+│   │   │
+│   │   ├── online/
+│   │   │   ├── model1_online-deployment.yml
+│   │   │   ├── model1_online-endpoint.yml
+│   │   │   ├── model2_online-deployment.yml
+│   │   │   ├── model2_online-endpoint.yml
+│   │   │   └── ...
+│   │   │
+│   │   └── ...
+│   │
+│   ├── train/
+│   │   ├── pipeline.yml
+│   │
+│   └── ...
+│
+└── ...
+```
