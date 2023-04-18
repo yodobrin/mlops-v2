@@ -1,0 +1,37 @@
+---
+
+# This is a workflow for Connecting to an AML Workspace
+name: Connect to Workspace
+
+inputs:
+  resourceGroup:
+    description: 'Resource Group'     
+    required: true
+    type: string
+  workspace:
+    description: 'Workspace Name'     
+    required: true
+    type: string
+  creds:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: 'Az CLI login'
+      uses: azure/login@v1
+      with:
+        creds: ${{inputs.creds}}
+        enable-AzPSSession: true 
+    - name: install-extension
+      run: |
+        az extension add -n ml -y
+      shell: bash
+    - name: update-extension
+      run: |
+        az extension update -n ml
+      shell: bash
+    - name: connect-to-workspace
+      run: |
+        az configure --defaults group=${{inputs.resourceGroup}} workspace=${{inputs.workspace}}
+      shell: bash

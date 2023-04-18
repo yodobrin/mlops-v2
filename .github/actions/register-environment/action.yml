@@ -7,20 +7,9 @@ inputs:
   environment_file:
     description: 'Path to the environment file'
     required: true
-  resource_group:
-    description: 'Azure resource group'
+  creds:
+    description: 'Azure credentials'
     required: true
-  workspace_name:
-    description: 'Azure Machine Learning workspace name'
-    required: true
-  conda_file:
-    description: 'Path to the conda file'
-    required: false
-    default: ""
-  dockerfile_location:
-    description: 'Path to the Dockerfile location'
-    required: false
-    default: ""
 runs:
   using: "composite"
   steps:
@@ -43,22 +32,6 @@ runs:
       shell: bash
 
     - name: Create environment from file with conda
-      if: ${{ inputs.conda_file != ''}}
       run: |
-        az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} \
-                              --workspace-name ${{ inputs.workspace_name }} --conda-file ${{ github.workspace }}/${{ inputs.conda_file }}
-      shell: bash
-
-    - name: Create environment from file without conda
-      if: ${{ inputs.conda_file == ''}}
-      run: |
-        az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} \
-                                --workspace-name ${{ inputs.workspace_name }}
-      shell: bash
-
-    - name: Create environment from image
-      if: ${{ inputs.dockerfile_location != ''}}
-      run: |
-        az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} \
-                                --workspace-name ${{ inputs.workspace_name }} --build-context ${{ github.workspace }}/${{ inputs.dockerfile_location }}
+        az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} 
       shell: bash

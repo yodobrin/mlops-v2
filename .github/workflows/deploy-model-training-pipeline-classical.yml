@@ -15,8 +15,23 @@ jobs:
         uses: docker://ghcr.io/yodobrin/mlops-v2/get-config-action:1.0.0
         with:
           file_name: config-infra-prod.yml
+  connect-to-workspace:
+    needs: get-config
+    runs-on: ubuntu-latest
+    outputs:
+      workspace: ${{ steps.connect.outputs.workspace }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Connect to workspace
+        id: connect
+        uses: ./.github/actions/connect-to-workspace
+        with:
+          resource_group: ${{ needs.get-config.outputs.resource_group }}
+          workspace_name: ${{ needs.get-config.outputs.aml_workspace }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
   register-environment:
-      needs: get-config
+      needs: [get-config, connect-to-workspace]
       runs-on: ubuntu-latest
       steps:
         - name: Checkout repository
