@@ -17,7 +17,7 @@ jobs:
           file_name: config-infra-prod.yml
   register-environment:
       needs: get-config
-      uses: Azure/mlops-templates/.github/workflows/register-environment.yml@main
+      uses: ./.github/workflows/common/register-environment.yml
       with:
         resource_group: ${{ needs.get-config.outputs.resource_group }}
         workspace_name: ${{ needs.get-config.outputs.aml_workspace }}     
@@ -27,7 +27,7 @@ jobs:
           creds: ${{secrets.AZURE_CREDENTIALS}}
   create-compute:
       needs: [get-config,register-environment]
-      uses: Azure/mlops-templates/.github/workflows/create-compute.yml@main
+      uses: ./.github/workflows/common/create-compute.yml
       with:
         cluster_name: cpu-cluster
         size: Standard_DS3_v2
@@ -40,7 +40,7 @@ jobs:
           creds: ${{secrets.AZURE_CREDENTIALS}}
   run-pipeline:
       needs: [get-config,register-environment,create-compute]
-      uses: Azure/mlops-templates/.github/workflows/run-pipeline.yml@main
+      uses: ./.github/workflows/common/run-pipeline.yml
       with:
         resource_group: ${{ needs.get-config.outputs.resource_group }}
         workspace_name: ${{ needs.get-config.outputs.aml_workspace }}     

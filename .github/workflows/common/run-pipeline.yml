@@ -1,0 +1,62 @@
+name: run-pipeline
+
+on:
+  workflow_call:
+    inputs:
+      parameters-file:
+        required: true
+        type: string
+      resource_group:
+        required: true
+        type: string
+      workspace_name:
+        required: true
+        type: string
+      job-name:
+        required: true
+        type: string
+    secrets:
+      creds:
+        required: true
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: "Az CLI login"
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.creds}}
+          enable-AzPSSession: true
+      - name: install-extension
+        run: az extension add -n ml -y
+      - name: update-extension
+        run: az extension update -n ml
+      - name: run-ml-pipeline
+        run: |
+          run_id=$(az ml job create --file ${{ github.workspace }}/${{ inputs.parameters-file  }} --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.workspace_name }} --query name -o tsv)
+          if [[ -z "$run_id" ]]
+          then
+            echo "Job creation failed"
+            exit 3
+          fi
+          az ml job show -n $run_id --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.workspace_name }} --web 
+          status=$(az ml job show -n $run_id --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.workspace_name }} --query status -o tsv)
+          if [[ -z "$status" ]]
+          then
+            echo "Status query failed"
+            exit 4
+          fi
+          running=("NotStarted" "Queued" "Starting" "Preparing" "Running" "Finalizing" "CancelRequested")
+          while [[ ${running[*]} =~ $status ]]
+          do
+            sleep 15 
+            status=$(az ml job show -n $run_id --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.workspace_name }} --query status -o tsv)
+            echo $status
+          done
+          if [[ "$status" != "Completed" ]]  
+          then
+            echo "Training Job failed or canceled"
+            exit 3
+          fi

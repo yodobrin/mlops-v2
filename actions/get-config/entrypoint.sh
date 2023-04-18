@@ -1,6 +1,6 @@
 #!/bin/sh -l
 
-FILE_NAME=$1
+FILE_NAME=$INPUT_FILE_NAME
 
 python -c "import yaml; data = yaml.safe_load(open('$FILE_NAME')); print(data)"
 
