@@ -100,7 +100,7 @@ jobs:
       environment: ${{  steps.variables.outputs.environment }}
       enable_aml_computecluster: ${{  steps.variables.outputs.enable_aml_computecluster }}
       enable_monitoring: ${{  steps.variables.outputs.enable_monitoring }}
-      resource_group: rg-${{ steps.variables.outputs.namespace }}-${{ steps.variables.outputs.postfix }} ${{ steps.variables.outputs.environment }
+      resource_group: rg-${{ steps.variables.outputs.namespace }}-${{ steps.variables.outputs.postfix }} ${{ steps.variables.outputs.environment }}
       aml_workspace: ${{  steps.variables.outputs.aml_workspace }}
       # bep: ${{  steps.variables.outputs.bep }}
       # oep: ${{  steps.variables.outputs.oep }}
