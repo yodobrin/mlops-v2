@@ -7,7 +7,7 @@ jobs:
       uses: ./.github/workflows/variables.yml
   register-environment:
       needs: get-config
-      uses: ./.github/workflows/common/register-environment.yml
+      uses: ./.github/workflows/register-environment.yml
       with:
             environment_file: ./mlops/azureml/train/train-env.yml
             conda_file: ./data-science/environment/train-conda.yml
