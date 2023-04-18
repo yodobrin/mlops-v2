@@ -20,7 +20,7 @@ name: set-variables
   # storage_account: st$(namespace)$(postfix)$(environment)
 
 on:
-  workflow_call:
+  workflow_call: 
     inputs:
       location:
         description: "The resource group to use"
@@ -28,12 +28,12 @@ on:
         type: string
       namespace:
         description: "Namespace of the resources"
-        default: "spmlopsv2"
+        default: "ydamlv12"
         type: string
       postfix:
         description: "Postfix for the resource names"
-        default: 4200
-        type: number
+        default: 'yd202304'
+        type: string
       environment:
         description: "Environment"
         default: "dev"
