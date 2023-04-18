@@ -19,6 +19,8 @@ jobs:
       needs: get-config
       runs-on: ubuntu-latest
       steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
         - name: Register Environment
           uses: ./.github/actions/register-environment
           with:
