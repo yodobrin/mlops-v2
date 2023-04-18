@@ -46,10 +46,6 @@ on:
         description: "Boolean to decide whether to enable monitoring"
         default: false
         type: boolean
-      aml_workspace:
-        description: "The aml_workspace to use"
-        default: mlw-$(namespace)-$(postfix)$(environment)
-        type: string
       bep:
         description: "The batch endpoint"
         default: bep-$(namespace)-$(postfix)$(environment)
@@ -100,10 +96,11 @@ jobs:
       environment: ${{  steps.variables.outputs.environment }}
       enable_aml_computecluster: ${{  steps.variables.outputs.enable_aml_computecluster }}
       enable_monitoring: ${{  steps.variables.outputs.enable_monitoring }}
-      resource_group: rg-${{ steps.variables.outputs.namespace }}-${{ steps.variables.outputs.postfix }} ${{ steps.variables.outputs.environment }}
-      aml_workspace: ${{  steps.variables.outputs.aml_workspace }}
+      resource_group: ${{ format('rg-{0}-{1}-{2}', steps.variables.outputs.namespace, steps.variables.outputs.postfix, steps.variables.outputs.environment) }}
+      aml_workspace: ${{ format('mlw-{0}-{1}-{2}', steps.variables.outputs.namespace, steps.variables.outputs.postfix, steps.variables.outputs.environment) }}
       # bep: ${{  steps.variables.outputs.bep }}
       # oep: ${{  steps.variables.outputs.oep }}
     steps:
         - id: variables
-          run: echo The location is ${{ inputs.location }}
+          run: echo The location is ${{ inputs.location }} |
+              echo The resource group  is ${{ inputs.location }}
