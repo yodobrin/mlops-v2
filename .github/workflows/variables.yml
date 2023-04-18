@@ -46,10 +46,6 @@ on:
         description: "Boolean to decide whether to enable monitoring"
         default: false
         type: boolean
-      resource_group:
-        description: "The resource group to use"
-        default: rg-$(namespace)-$(postfix)$(environment)
-        type: string
       aml_workspace:
         description: "The aml_workspace to use"
         default: mlw-$(namespace)-$(postfix)$(environment)
@@ -104,7 +100,7 @@ jobs:
       environment: ${{  steps.variables.outputs.environment }}
       enable_aml_computecluster: ${{  steps.variables.outputs.enable_aml_computecluster }}
       enable_monitoring: ${{  steps.variables.outputs.enable_monitoring }}
-      resource_group: ${{  steps.variables.outputs.resource_group }}
+      resource_group: rg-${{ steps.variables.outputs.namespace }}-${{ steps.variables.outputs.postfix }} ${{ steps.variables.outputs.environment }
       aml_workspace: ${{  steps.variables.outputs.aml_workspace }}
       # bep: ${{  steps.variables.outputs.bep }}
       # oep: ${{  steps.variables.outputs.oep }}
