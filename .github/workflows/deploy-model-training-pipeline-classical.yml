@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 jobs:
   get-config:
-      uses: ./.github/workflows/variables
+      uses: ./.github/workflows/variables.yml
   register-environment:
       needs: get-config
       runs-on: ubuntu-latest
