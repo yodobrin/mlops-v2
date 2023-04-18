@@ -103,4 +103,5 @@ jobs:
     steps:
         - id: variables
           run: echo The location is ${{ inputs.location }} |
-              echo The resource group  is ${{ inputs.location }}
+              echo The resource group  is ${{ jobs.read-yaml.outputs.resource_group  }}
+               echo The workspace  is ${{ jobs.read-yaml.outputs.aml_workspace  }}
