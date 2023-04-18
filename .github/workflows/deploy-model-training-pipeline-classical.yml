@@ -14,7 +14,7 @@ jobs:
         id: load-config
         uses: docker://ghcr.io/yodobrin/mlops-v2/get-config-action:1.0.0
         with:
-          file_name: config-infra-prod.yml
+          file_name: ./.github/workflows/variables.yml
   # connect-to-workspace:
   #   needs: get-config
   #   runs-on: ubuntu-latest
