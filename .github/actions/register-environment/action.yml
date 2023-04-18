@@ -1,3 +1,5 @@
+---
+
 name: 'Register Environment'
 description: 'Register Azure Machine Learning environment'
 
@@ -28,28 +30,35 @@ runs:
     - name: Azure Login
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        creds: ${{ inputes.creds }}
 
     - name: Install Azure ML extension
-      run: az extension add -n ml -y
+      run: |
+        az extension add -n ml -y
+      shell: bash
 
     - name: Update Azure ML extension
-      run: az extension update -n ml
+      run: |
+        az extension update -n ml
+      shell: bash
 
     - name: Create environment from file with conda
       if: ${{ inputs.conda_file != ''}}
       run: |
         az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} \
                               --workspace-name ${{ inputs.workspace_name }} --conda-file ${{ github.workspace }}/${{ inputs.conda_file }}
+      shell: bash
 
     - name: Create environment from file without conda
       if: ${{ inputs.conda_file == ''}}
       run: |
         az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} \
                                 --workspace-name ${{ inputs.workspace_name }}
+      shell: bash
 
     - name: Create environment from image
       if: ${{ inputs.dockerfile_location != ''}}
       run: |
         az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} \
                                 --workspace-name ${{ inputs.workspace_name }} --build-context ${{ github.workspace }}/${{ inputs.dockerfile_location }}
+      shell: bash
