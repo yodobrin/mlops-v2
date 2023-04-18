@@ -12,6 +12,9 @@ inputs:
   workspace_name:
     description: "Azure ML workspace name"
     required: true
+  creds:
+    description: "Azure credentials"
+    required: true
 
 runs:
   using: "composite"
@@ -22,14 +25,18 @@ runs:
     - name: "Az CLI login"
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.creds }}
+        creds: ${{ inputs.creds }}
         enable-AzPSSession: true
 
     - name: Install Azure ML extension
-      run: az extension add -n ml -y
+      run: |
+        az extension add -n ml -y
+      shell: bash
 
     - name: Update Azure ML extension
-      run: az extension update -n ml
+      run: |
+        az extension update -n ml
+      shell: bash
 
     - name: Run Azure ML pipeline
       run: |
@@ -58,3 +65,4 @@ runs:
           echo "Training Job failed or canceled"
           exit 3
         fi
+      shell: bash
