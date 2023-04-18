@@ -29,15 +29,15 @@ runs:
       with:
         creds: ${{ inputs.creds }}
 
-    # - name: Install Azure ML extension
-    #   run: |
-    #     az extension add -n ml -y
-    #   shell: bash
+    - name: Install Azure ML extension
+      run: |
+        az extension add -n ml -y
+      shell: bash
 
-    # - name: Update Azure ML extension
-    #   run: |
-    #     az extension update -n ml
-    #   shell: bash
+    - name: Update Azure ML extension
+      run: |
+        az extension update -n ml
+      shell: bash
 
     - name: Create environment from file with conda
       run: |
