@@ -15,36 +15,3 @@ jobs:
         uses: docker://ghcr.io/yodobrin/mlops-v2/get-config-action:1.0.0
         with:
           file_name: config-infra-prod.yml
-  register-environment:
-      needs: get-config
-      uses: ./.github/workflows/common/register-environment.yml
-      with:
-        resource_group: ${{ needs.get-config.outputs.resource_group }}
-        workspace_name: ${{ needs.get-config.outputs.aml_workspace }}     
-        environment_file:  mlops/azureml/train/train-env.yml
-        conda_file: data-science/environment/train-conda.yml
-      secrets:
-          creds: ${{secrets.AZURE_CREDENTIALS}}
-  create-compute:
-      needs: [get-config,register-environment]
-      uses: ./.github/workflows/common/create-compute.yml
-      with:
-        cluster_name: cpu-cluster
-        size: Standard_DS3_v2
-        min_instances: 0
-        max_instances: 4
-        cluster_tier: LowPriority
-        resource_group: ${{ needs.get-config.outputs.resource_group }}
-        workspace_name: ${{ needs.get-config.outputs.aml_workspace }}     
-      secrets:
-          creds: ${{secrets.AZURE_CREDENTIALS}}
-  run-pipeline:
-      needs: [get-config,register-environment,create-compute]
-      uses: ./.github/workflows/common/run-pipeline.yml
-      with:
-        resource_group: ${{ needs.get-config.outputs.resource_group }}
-        workspace_name: ${{ needs.get-config.outputs.aml_workspace }}     
-        parameters-file:  mlops/azureml/train/pipeline.yml
-        job-name: test
-      secrets:
-          creds: ${{secrets.AZURE_CREDENTIALS}}
