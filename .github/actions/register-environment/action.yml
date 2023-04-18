@@ -30,7 +30,7 @@ runs:
     - name: Azure Login
       uses: azure/login@v1
       with:
-        creds: ${{ inputes.creds }}
+        creds: ${{ inputs.creds }}
 
     - name: Install Azure ML extension
       run: |
