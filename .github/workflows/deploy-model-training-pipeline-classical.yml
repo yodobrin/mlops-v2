@@ -57,5 +57,5 @@ jobs:
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }} 
           creds: ${{ secrets.AZURE_CREDENTIALS }}   
-          parameters: '{"datastore_name": "datastore", "datastore_path": "data", "model_name": "model.pkl"}'
+          parameters: ./mlops/azureml/train/pipeline.yml
 
