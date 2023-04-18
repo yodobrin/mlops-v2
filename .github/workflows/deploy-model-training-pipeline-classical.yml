@@ -41,7 +41,7 @@ jobs:
         with:
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }} 
-          cluster_name: ${{ inputs.cluster_name }} 
+          compute_name: ${{ inputs.cluster_name }} 
           cluster_size: 4
           node_sku: Standard_DS3_v2
           creds: ${{ secrets.AZURE_CREDENTIALS }}   
