@@ -7,6 +7,14 @@ inputs:
   environment_file:
     description: 'Path to the environment file'
     required: true
+  resource_group:
+    description: 'Resource Group'     
+    required: true
+    type: string
+  workspace_name:
+    description: 'Workspace Name'     
+    required: true
+    type: string    
   creds:
     description: 'Azure credentials'
     required: true
@@ -21,17 +29,17 @@ runs:
       with:
         creds: ${{ inputs.creds }}
 
-    - name: Install Azure ML extension
-      run: |
-        az extension add -n ml -y
-      shell: bash
+    # - name: Install Azure ML extension
+    #   run: |
+    #     az extension add -n ml -y
+    #   shell: bash
 
-    - name: Update Azure ML extension
-      run: |
-        az extension update -n ml
-      shell: bash
+    # - name: Update Azure ML extension
+    #   run: |
+    #     az extension update -n ml
+    #   shell: bash
 
     - name: Create environment from file with conda
       run: |
-        az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} 
+        az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.workspace_name }}
       shell: bash
