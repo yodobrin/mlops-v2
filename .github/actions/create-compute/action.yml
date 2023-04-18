@@ -33,20 +33,20 @@ runs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # - name: Azure Login
-    #   uses: azure/login@v1
-    #   with:
-    #     creds: ${{ inputs.creds }}
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.creds }}
 
-    # - name: Install Azure ML extension
-    #   run: |
-    #     az extension add -n ml -y
-    #   shell: bash
+    - name: Install Azure ML extension
+      run: |
+        az extension add -n ml -y
+      shell: bash
 
-    # - name: Update Azure ML extension
-    #   run: |
-    #     az extension update -n ml
-    #   shell: bash
+    - name: Update Azure ML extension
+      run: |
+        az extension update -n ml
+      shell: bash
 
     - name: Create environment from file with conda
       run: |

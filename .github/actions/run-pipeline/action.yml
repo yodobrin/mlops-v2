@@ -19,17 +19,17 @@ runs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    # - name: "Az CLI login"
-    #   uses: azure/login@v1
-    #   with:
-    #     creds: ${{ secrets.creds }}
-    #     enable-AzPSSession: true
+    - name: "Az CLI login"
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.creds }}
+        enable-AzPSSession: true
 
-    # - name: Install Azure ML extension
-    #   run: az extension add -n ml -y
+    - name: Install Azure ML extension
+      run: az extension add -n ml -y
 
-    # - name: Update Azure ML extension
-    #   run: az extension update -n ml
+    - name: Update Azure ML extension
+      run: az extension update -n ml
 
     - name: Run Azure ML pipeline
       run: |
