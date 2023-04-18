@@ -4,11 +4,11 @@
 name: Connect to Workspace
 
 inputs:
-  resourceGroup:
+  resource_group:
     description: 'Resource Group'     
     required: true
     type: string
-  workspace:
+  workspace_name:
     description: 'Workspace Name'     
     required: true
     type: string
