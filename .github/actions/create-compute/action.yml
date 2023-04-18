@@ -1,0 +1,61 @@
+---
+
+name: 'Create (or get) Compute'
+description: 'Create training capacity in the workspace'
+
+inputs:
+  resource_group:
+    description: 'Resource Group'     
+    required: true
+    type: string
+  workspace_name:
+    description: 'Workspace Name'     
+    required: true
+    type: string    
+  compute_name:
+    description: 'Compute Name'     
+    required: true
+    type: string
+  cluster_size:
+    description: 'Cluster Size'     
+    required: true
+    type: number
+  node_sku:
+    description: 'Node SKU'     
+    required: true
+    type: string
+  creds:
+    description: 'Azure credentials'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # - name: Azure Login
+    #   uses: azure/login@v1
+    #   with:
+    #     creds: ${{ inputs.creds }}
+
+    # - name: Install Azure ML extension
+    #   run: |
+    #     az extension add -n ml -y
+    #   shell: bash
+
+    # - name: Update Azure ML extension
+    #   run: |
+    #     az extension update -n ml
+    #   shell: bash
+
+    - name: Create environment from file with conda
+      run: |
+          az ml compute create --name ${{ inputs.compute_name }} \
+                                  --type AmlCompute \
+                                  --tier "dedicated" \
+                                  --size ${{inputs.node_sku}} \
+                                  --min-instances 0 \
+                                  --max-instances ${{ inputs.cluster_size }} \
+                                  --resource-group ${{ inputs.resource_group }} \
+                                  --workspace-name ${{ inputs.workspace_name }}
+      shell: bash
