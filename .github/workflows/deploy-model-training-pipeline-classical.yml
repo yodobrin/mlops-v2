@@ -7,15 +7,10 @@ jobs:
       uses: ./.github/workflows/variables.yml
   register-environment:
       needs: get-config
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v2
-        - name: Register Environment
-          uses: ./.github/actions/register-environment
-          with:
-            environment_file: mlops/azureml/train/train-env.yml
-            conda_file: data-science/environment/train-conda.yml
+      uses: ./.github/workflows/common/register-environment.yml
+      with:
+            environment_file: ./mlops/azureml/train/train-env.yml
+            conda_file: ./data-science/environment/train-conda.yml
             resource_group: ${{ needs.get-config.outputs.resource_group }}
             workspace_name: ${{ needs.get-config.outputs.aml_workspace }}
             creds: ${{ secrets.AZURE_CREDENTIALS }}
