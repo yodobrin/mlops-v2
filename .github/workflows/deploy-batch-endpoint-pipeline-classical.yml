@@ -45,9 +45,10 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}     
   create-endpoint:
     runs-on: ubuntu-latest
+    needs: create-compute
     steps:
       - name: Execute create-endpoint composite action
-        uses: ./.github/actions/create-endpoint-composite
+        uses: ./.github/actions/create-endpoint
         with:
           endpoint_file: ${{ inputs.endpoint_file }}
           resource_group: ${{ inputs.resource_group }}
@@ -58,9 +59,10 @@ jobs:
 
   create-deployment:
     runs-on: ubuntu-latest
+    needs: create-endpoint
     steps:
       - name: Execute create-deployment composite action
-        uses: ./.github/actions/create-deployment-composite
+        uses: ./.github/actions/create-deployment
         with:
           endpoint_file: ${{ inputs.endpoint_file }}
           resource_group: ${{ inputs.resource_group }}
