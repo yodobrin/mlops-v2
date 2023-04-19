@@ -15,10 +15,14 @@ on:
         description: 'AML Batch Compute cluster name'
         required: true
         default: 'batch-cluster'    
+      deployment_file:
+        description: 'Deployment file'
+        required: true
+        default: 'mlops/azureml/deploy/batch/batch-deployment.yml'
       endpoint_file:
         description: 'Endpoint file'
         required: true
-        default: 'mlops/azureml/deploy/batch/batch-deployment.yml'
+        default: 'mlops/azureml/deploy/batch/batch-endpoint.yml'
       endpoint_name:
         description: 'Endpoint name'
         required: true
