@@ -30,7 +30,6 @@ runs:
       uses: azure/login@v1
       with:
         creds: ${{inputs.creds}}
-        enable-AzPSSession: true
     - name: Install Azure ML extension
       run: |
         az extension add -n ml -y

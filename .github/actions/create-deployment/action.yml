@@ -24,11 +24,10 @@ runs:
   steps:
     - name: checkout
       uses: actions/checkout@v2
-    - name: "Az CLI login"
+    - name: Az login
       uses: azure/login@v1
       with:
         creds: ${{inputs.creds}}
-        enable-AzPSSession: true
     - name: Install Azure ML extensio
       run: |
         az extension add -n ml -y
