@@ -242,3 +242,76 @@ mlops/
 │
 └── ...
 ```
+
+## Putting it all together
+
+We have discussed the required components to build a MLOps pipeline. In this section we will see how to put it all together. We will use the taxi model as an example. The use of GitHUb actions is optional. You can use any other CI/CD tool.
+
+There are several alternatives to start a GitHub workflow, including: 
+- Push event: A workflow can be triggered when a commit is pushed to a particular branch of a repository. 
+
+- Pull request event: A workflow can be triggered when a pull request is opened, closed, or synchronized. 
+
+- Scheduled event: A workflow can be triggered at a specific time or on a recurring schedule. 
+
+- Repository dispatch event: A workflow can be triggered by an external event that is sent to the repository. 
+
+- Webhook event: A workflow can be triggered by a custom webhook that is set up to listen for specific events. 
+
+- External trigger: A workflow can be triggered by an external service, such as a continuous integration (CI) system or a deployment tool. 
+
+These are some of the most common alternatives to start a GitHub workflow. Each of them can be configured to suit different use cases and requirements. 
+
+GitHub, or any other CI/CD tool, will need to be authorized to access the Azure resources. This can be done by creating a service principal. The service principal will be used to authenticate the CI/CD tool to Azure. This identity will be used to create the Azure resources and to run the Azure ML pipelines. It will need to have a `contributor` role on the resource group or the subscription, depending if you want to use this identity to create the resource group or not.
+
+### Understanding the GitHub workflow 
+
+
+The GitHub workflows in this repositoryare designed to automate the process of:
+
+- Training a machine learning model using Azure Machine Learning service.
+
+- Online and bacth deployment of the model using Azure Machine Learning service.
+
+These workflows are triggered by the "workflow_dispatch" event, which means that it can be manually triggered by the user. When a workflow is triggered, it asks the user to provide few inputs for example: the name of the resource group where the Azure resources are located, the name of the Azure Machine Learning workspace, and the name of the AML compute cluster to use for training the model.  
+
+The workflow is divided into several jobs, each of which performs a specific task, the following are example of the training workflow: 
+
+- The "register-environment" job registers the conda environment that is needed for training the model in the Azure Machine Learning workspace. This job checks out the repository and uses a custom action called "register-environment" to register the environment. The action takes three inputs: the environment file, the name of the resource group, and the name of the workspace. 
+
+- The "create-compute" job creates an Azure Machine Learning compute cluster with the specified name, size, and node SKU. This job also checks out the repository and uses a custom action called "create-compute" to create the cluster. The action takes several inputs, including the name of the resource group, the name of the workspace, the name of the cluster, the cluster size, and the node SKU. 
+
+- The "run-pipeline" job runs the machine learning pipeline that trains the model. This job checks out the repository and uses a custom action called "run-pipeline" to run the pipeline. The action takes several inputs, including the name of the resource group, the name of the workspace, the credentials needed to authenticate with Azure, and the location of the pipeline YAML file. 
+
+Overall, workflows automates the process of training and deploying a machine learning model using Azure Machine Learning service, making it easier for data scientists to deploy their models quickly and efficiently.
+
+### Creating a service principal
+
+```azurecli
+az login
+az account set --subscription <your subscription id>
+az ad sp create-for-rbac --name <your service principal name> --role contributor --scopes /subscriptions/<your subscription id> --sdk-auth
+```
+
+The above command will return a json object with the service principal credentials. You will need to store these credentials in a secure location. In this example we will use GitHub secrets.
+
+There multiple blog posts and documentation on how to create a service principal. You can find more information [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal).
+
+Similarly, there are multiple documents, explaining how to create a GitHub secret. You can find more information [here](https://docs.github.com/en/actions/reference/encrypted-secrets).
+
+
+### Running the pipelines
+
+#### Preparing, Training, Model Registration
+
+As explained previously, the first step include several inner steps, such as preparing data, training and validation and model registration.
+
+The following diagram shows the steps involved in the training pipeline:
+
+![pipeline run](/images/2023-04-19-09-58-24.png)
+
+#### Online and Batch Deployment
+
+As part of this repository, we have included a GitHub workflow that automates the process of deploying the model as a web service. Follow this document to better understand the key use cases for online and batch deployment. Please review this [document](https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints?view=azureml-api-2) to better understand the key use cases for online and batch deployment.
+
+
