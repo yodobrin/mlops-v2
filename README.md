@@ -13,6 +13,8 @@ The approach currently leverages few key areas:
 
 This repository provides a good starting point to get you started with MLOps. It uses Azure Machine Learning (AML) CLI V2, DevOps pipeline (soon to be added) or GitHub actions, and AML CLI YAML schema. To start, clone or fork the repo and follow the steps in the Prerequisites & Setup section. You can work with multiple models, and the directory structure and deployment code should be hosted under the `data-science` and `mlops/azureml` folders, respectively. The GitHub workflows in this repository automate the process of training and deploying a machine learning model using Azure Machine Learning service.
 
+> Note: You will need to expand the collapsed section to allow table of content navigation.
+
 ## Table of Contents
 
 
