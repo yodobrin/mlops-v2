@@ -11,7 +11,29 @@ The approach currently leverages few key areas:
 
 - AML CLI (V2) YAML schema - see our [docs](https://learn.microsoft.com/azure/machine-learning/reference-yaml-overview)
 
-## Prerequisites & Setup
+This repository provides a good starting point to get you started with MLOps. It uses Azure Machine Learning (AML) CLI V2, DevOps pipeline (soon to be added) or GitHub actions, and AML CLI YAML schema. To start, clone or fork the repo and follow the steps in the Prerequisites & Setup section. You can work with multiple models, and the directory structure and deployment code should be hosted under the `data-science` and `mlops/azureml` folders, respectively. The GitHub workflows in this repository automate the process of training and deploying a machine learning model using Azure Machine Learning service.
+
+## Table of Contents
+
+
+- [Prerequisites & Setup](#prerequisites--setup)
+   - [0 - Create Resources](#0---create-resources)
+   - [0.1 - CLI Setup / Update](#01---cli-setup--update)
+   - [1 - Connect to the workspace](#1---connect-to-the-workspace)
+   - [2 - Creating / Register an environment](#2---creating--register-an-environment)
+   - [3 - Create a compute](#3---create-a-compute)
+   - [4 - Submit a training job (prep, train, evaluate, model registeration)](#4---submit-a-training-job-prep-train-evaluate-model-registeration)
+   - [5 - Deploy the model](#5---deploy-the-model)
+   - [6 - Test the model](#6---test-the-model)
+- [Working with multiple models](#working-with-multiple-models)
+- [Putting it all together](#putting-it-all-together)
+    - [Understanding the GitHub workflow](#understanding-the-github-workflow)
+    - [Creating a service principal](#creating-a-service-principal)
+    - [Running the pipelines](#running-the-pipelines)
+
+<details id="prerequisites--setup">
+<summary style="font-size: 24px; font-weight: bold;">Prerequisites & Setup</summary>
+
 
 Cloning or forking this repo.
 
@@ -169,8 +191,11 @@ base_url=<URL of the online/batch end-point>
 api_key=<API key>
 
 ```
+</details>
 
-## Working with multiple models
+<details id="working-with-multiple-models">
+<summary style="font-size: 24px; font-weight: bold;">Working with multiple models</summary>
+
 
 It is a common practice to have multiple models for different scenarios. Each of these models will have diffrent code, enviorment, compute, etc. In this section we will see how to work with multiple models.
 
@@ -242,8 +267,11 @@ mlops/
 │
 └── ...
 ```
+</details>
 
-## Putting it all together
+
+<details id="putting-it-all-together">
+<summary style="font-size: 24px; font-weight: bold;">Putting it all together</summary>
 
 We have discussed the required components to build a MLOps pipeline. In this section we will see how to put it all together. We will use the taxi model as an example. The use of GitHUb actions is optional. You can use any other CI/CD tool.
 
@@ -314,4 +342,4 @@ The following diagram shows the steps involved in the training pipeline:
 
 As part of this repository, we have included a GitHub workflow that automates the process of deploying the model as a web service. Follow this document to better understand the key use cases for online and batch deployment. Please review this [document](https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints?view=azureml-api-2) to better understand the key use cases for online and batch deployment.
 
-
+</details>
