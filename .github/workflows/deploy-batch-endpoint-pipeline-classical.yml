@@ -56,7 +56,7 @@ jobs:
       - name: Create Endpoint
         uses: ./.github/actions/create-endpoint
         with:
-          deployment_file: ${{ inputs.deployment_file }}
+          endpoint_file: ${{ inputs.endpoint_file }}          
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}
@@ -71,7 +71,7 @@ jobs:
       - name: Execute create-deployment composite action
         uses: ./.github/actions/create-deployment
         with:
-          endpoint_file: ${{ inputs.endpoint_file }}
+          deployment_file: ${{ inputs.deployment_file }}
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}
