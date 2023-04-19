@@ -27,15 +27,18 @@ runs:
     - name: Az login
       uses: azure/login@v1
       with:
-        creds: ${{inputs.creds}}
+        creds: ${{ inputs.creds }}
+
     - name: Install Azure ML extensio
       run: |
         az extension add -n ml -y
       shell: bash
+
     - name: Update Azure ML extension
       run: |
         az extension update -n ml
       shell: bash
+      
     - name: Create deployment
       run: |
         deployment_name="${{ inputs.endpoint_name }}-deployment-$RANDOM"

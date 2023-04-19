@@ -57,7 +57,7 @@ jobs:
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}
           endpoint_type: ${{ inputs.endpoint_type }}
-          creds: ${{ secrets.creds }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
   create-deployment:
     runs-on: ubuntu-latest
     needs: create-endpoint
@@ -72,4 +72,4 @@ jobs:
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}
           endpoint_type: ${{ inputs.endpoint_type }}          
-          creds: ${{ secrets.creds }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
