@@ -2,41 +2,76 @@ name: deploy-online-endpoint-pipeline
 
 on: 
   workflow_dispatch:
+    inputs:
+      resource_group:
+        description: 'Resource group name'
+        required: true
+        default: 'rg-ydamlv12-yd202304dev'
+      aml_workspace:
+        description: 'AML workspace name'
+        required: true
+        default: 'mlw-ydamlv12-yd202304dev'
+      deployment_file:
+        description: 'Deployment file'
+        required: true
+        default: 'mlops/azureml/deploy/online/online-deployment.yml'
+      endpoint_file:
+        description: 'Endpoint file'
+        required: true
+        default: 'mlops/azureml/deploy/online/online-endpoint.yml'
+      endpoint_name:
+        description: 'Endpoint name'
+        required: true
+        default: 'taxi-gha-online'
+      traffic_percentile:
+        description: 'Traffic percentile'
+        required: true
+        default: '100'
+
 jobs:
-  get-config:
-      uses: ./.github/workflows/variables.yml
-      with:
-        file_name: config-infra-prod.yml
+
   create-endpoint:
-      needs: get-config
-      uses: Azure/mlops-templates/.github/workflows/create-endpoint.yml@main
-      with:
-        resource_group: ${{ needs.get-config.outputs.resource_group }}
-        workspace_name: ${{ needs.get-config.outputs.aml_workspace }} 
-        endpoint_file: mlops/azureml/deploy/online/online-endpoint.yml
-        endpoint_name: ${{ format('taxi-gha-{0}', needs.get-config.outputs.oep) }}
-        endpoint_type: online
-      secrets:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
+    runs-on: ubuntu-latest    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2      
+      - name: Create Endpoint
+        uses: ./.github/actions/create-endpoint
+        with:
+          endpoint_file: ${{ inputs.endpoint_file }}          
+          resource_group: ${{ inputs.resource_group }}
+          workspace_name: ${{ inputs.aml_workspace }}
+          endpoint_name: ${{ inputs.endpoint_name }}
+          endpoint_type: 'online'
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
   create-deployment:
-      uses: Azure/mlops-templates/.github/workflows/create-deployment.yml@main
-      needs: [get-config,create-endpoint]
-      with:
-        resource_group: ${{ needs.get-config.outputs.resource_group }}
-        workspace_name: ${{ needs.get-config.outputs.aml_workspace }} 
-        endpoint_file: mlops/azureml/deploy/online/online-deployment.yml
-        endpoint_name: ${{ format('taxi-gha-{0}', needs.get-config.outputs.oep) }}
-        endpoint_type: online
-        deployment_name: taxi-online-dp
-      secrets:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
-  allocate-traffic:
-      uses: Azure/mlops-templates/.github/workflows/allocate-traffic.yml@main
-      needs: [get-config,create-deployment]
-      with:
-        resource_group: ${{ needs.get-config.outputs.resource_group }}
-        workspace_name: ${{ needs.get-config.outputs.aml_workspace }} 
-        traffic_allocation: taxi-online-dp=100
-        endpoint_name: ${{ format('taxi-gha-{0}', needs.get-config.outputs.oep) }}
-      secrets:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
+    runs-on: ubuntu-latest
+    outputs:
+      deployment_name: ${{ steps.call_create_deployment.outputs.deployment_name }}
+    needs: create-endpoint
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Execute create-deployment composite action
+        id: call_create_deployment
+        uses: ./.github/actions/create-deployment
+        with:
+          deployment_file: ${{ inputs.deployment_file }}
+          resource_group: ${{ inputs.resource_group }}
+          workspace_name: ${{ inputs.aml_workspace }}
+          endpoint_name: ${{ inputs.endpoint_name }}
+          endpoint_type: 'online'          
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  allocate_traffic:
+    runs-on: ubuntu-latest
+    needs: create-deployment
+    steps:
+      - name: Call Allocate Traffic Composite Action
+        uses: ./.github/actions/allocate-traffic-action
+        with:
+          endpoint_name: ${{ inputs.endpoint_name }}
+          resource_group: ${{ inputs.resource_group }}
+          workspace_name:  ${{ inputs.aml_workspace }}
+          traffic_allocation: "${{ needs.create-deployment.outputs.deployment_name }}=${{ inputs.traffic_percentile }}"          
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+

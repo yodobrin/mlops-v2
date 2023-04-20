@@ -45,7 +45,11 @@ runs:
     - name: Create deployment
       run: |
         deployment_name="${{ inputs.endpoint_name }}-deployment-$RANDOM"
+        echo "::set-output name=deployment_name::$deployment_name"
         az ml ${{ inputs.endpoint_type }}-deployment create --name $deployment_name --endpoint ${{ inputs.endpoint_name }} \
         -f ${{ github.workspace }}/${{ inputs.deployment_file }} --resource-group ${{ inputs.resource_group }} \
         --workspace-name ${{ inputs.workspace_name }}
       shell: bash
+outputs:
+  deployment_name:
+    description: 'Deployment name, used to allocate online traffic'

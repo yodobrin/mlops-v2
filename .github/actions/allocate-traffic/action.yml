@@ -1,0 +1,41 @@
+---
+name: 'Allocate Traffic'
+description: 'A composite action to allocate traffic for an Azure Machine Learning online endpoint'
+inputs:
+  endpoint_name:
+    description: 'Name of the Azure Machine Learning online endpoint'
+    required: true
+  resource_group:
+    description: 'Name of the Azure resource group'
+    required: true
+  workspace_name:
+    description: 'Name of the Azure Machine Learning workspace'
+    required: true
+  traffic_allocation:
+    description: 'Traffic allocation for the Azure Machine Learning online endpoint'
+    required: true
+  creds:
+    description: 'Azure credentials to authenticate with the Azure subscription'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Az CLI login
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.creds }}
+    - name: Install extension
+      run: |
+        az extension add -n ml -y
+      shell: bash
+    - name: Update extension
+      run: |
+        az extension update -n ml
+      shell: bash
+    - name: Allocate traffic
+      run: |
+        az ml online-endpoint update --name ${{ inputs.endpoint_name }} --traffic "${{ inputs.traffic_allocation }}" \
+        --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.workspace_name }}
+      shell: bash
