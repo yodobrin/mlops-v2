@@ -69,7 +69,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2      
       - name: Call Allocate Traffic Composite Action
-        uses: ./.github/actions/allocate-traffic-action
+        uses: ./.github/actions/allocate-traffic
         with:
           endpoint_name: ${{ inputs.endpoint_name }}
           resource_group: ${{ inputs.resource_group }}
