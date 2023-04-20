@@ -44,8 +44,8 @@ runs:
 
     - name: Create deployment
       run: |
-        deployment_name="${{ inputs.endpoint_name }}-deployment-$RANDOM"
-        echo "::set-output name=deployment_name::$deployment_name"
+        deployment_name="${{ inputs.endpoint_name }}-$RANDOM"
+        echo "deployment_name=$deployment_name" >> $GITHUB_ENV
         az ml ${{ inputs.endpoint_type }}-deployment create --name $deployment_name --endpoint ${{ inputs.endpoint_name }} \
         -f ${{ github.workspace }}/${{ inputs.deployment_file }} --resource-group ${{ inputs.resource_group }} \
         --workspace-name ${{ inputs.workspace_name }}
