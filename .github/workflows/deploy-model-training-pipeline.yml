@@ -53,8 +53,7 @@ jobs:
 
       - name: Create environment(image) for training
         run: |
-          az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} \
-           --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }}
+          az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }}
         shell: bash
 
       - name: Create Compute Cluster
