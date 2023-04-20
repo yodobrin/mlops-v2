@@ -36,7 +36,7 @@ on:
 
 
 jobs:
-  set-up:
+  WorkflowRun:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -51,20 +51,12 @@ jobs:
           az extension update --name azure-cli-ml
         shell: bash
 
-  register-environment:
-    runs-on: ubuntu-latest
-    needs: set-up
-    steps:
       - name: Create environment(image) for training
         run: |
           az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} \
            --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }}
         shell: bash
 
-  create-compute:
-    runs-on: ubuntu-latest
-    needs: [set-up,register-environment]
-    steps:
       - name: Create Compute Cluster
         run: |
           az ml compute create --name ${{ inputs.cluster_name }} \
@@ -77,10 +69,6 @@ jobs:
                                   --workspace-name ${{ inputs.aml_workspace }}
         shell: bash
 
-  run-pipeline:
-    runs-on: ubuntu-latest
-    needs: [set-up,register-environment, create-compute]
-    steps:
       - name: Run Azure ML pipeline
         run: |
           run_id=$(az ml job create --file ${{ github.workspace }}/${{ inputs.parameters  }} --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }} --query name -o tsv)
