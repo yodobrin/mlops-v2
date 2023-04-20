@@ -66,6 +66,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: create-deployment
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2      
       - name: Call Allocate Traffic Composite Action
         uses: ./.github/actions/allocate-traffic-action
         with:
