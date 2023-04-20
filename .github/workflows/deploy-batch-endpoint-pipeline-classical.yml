@@ -31,6 +31,10 @@ on:
         description: 'Endpoint type'
         required: true
         default: 'batch'
+      deployment_name:
+        description: 'Deployment name'
+        required: true
+        default: 'taxi-gha-batch'
 jobs:
 
   create-compute:
@@ -75,5 +79,6 @@ jobs:
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}
+          deployment_name: ${{ inputs.deployment_name }}
           endpoint_type: batch          
           creds: ${{ secrets.AZURE_CREDENTIALS }}

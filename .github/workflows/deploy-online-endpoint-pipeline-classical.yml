@@ -27,6 +27,10 @@ on:
         description: 'Traffic percentile'
         required: true
         default: '100'
+      deployment_name:
+        description: 'Deployment name'
+        required: true
+        default: 'taxi-gha-online'
 
 jobs:
 
@@ -46,14 +50,11 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
   create-deployment:
     runs-on: ubuntu-latest
-    outputs:
-      deployment_name: ${{ steps.call_create_deployment.outputs.deployment_name }}
     needs: create-endpoint
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Execute create-deployment composite action
-        id: call_create_deployment
         uses: ./.github/actions/create-deployment
         with:
           deployment_file: ${{ inputs.deployment_file }}
@@ -74,6 +75,6 @@ jobs:
           endpoint_name: ${{ inputs.endpoint_name }}
           resource_group: ${{ inputs.resource_group }}
           workspace_name:  ${{ inputs.aml_workspace }}
-          traffic_allocation: "${{ needs.create-deployment.outputs.deployment_name }}=${{ inputs.traffic_percentile }}"          
+          traffic_allocation: "${{ inputs.deployment_name }}=${{ inputs.traffic_percentile }}"          
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
