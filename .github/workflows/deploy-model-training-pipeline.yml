@@ -47,8 +47,8 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Install az ml
         run: |
-          az extension add --name azure-cli-ml
-          az extension update --name azure-cli-ml
+          az extension add -n ml
+          az extension update --name ml
         shell: bash
 
       - name: Create environment(image) for training
