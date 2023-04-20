@@ -75,6 +75,7 @@ jobs:
           endpoint_name: ${{ inputs.endpoint_name }}
           resource_group: ${{ inputs.resource_group }}
           workspace_name:  ${{ inputs.aml_workspace }}
+          deployment_name: ${{ inputs.deployment_name }}
           traffic_allocation: "${{ inputs.deployment_name }}=${{ inputs.traffic_percentile }}"          
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
