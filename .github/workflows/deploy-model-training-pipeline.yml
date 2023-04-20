@@ -1,0 +1,113 @@
+name: Training Workflow
+
+
+on: 
+  workflow_dispatch:
+    inputs:
+      resource_group:
+        description: 'Resource group name'
+        required: true
+        default: 'rg-ydamlv12-yd202304dev'
+      aml_workspace:
+        description: 'AML workspace name'
+        required: true
+        default: 'mlw-ydamlv12-yd202304dev'
+      cluster_name:
+        description: 'AML compute cluster name'
+        required: true
+        default: 'cpu-cluster'
+      environment_file:
+        description: 'Environment file'
+        required: true
+        default: './mlops/azureml/train/train-env.yml'
+      node_sku:
+        description: 'Node SKU'
+        required: true
+        default: 'Standard_DS3_v2'
+      cluster_size:
+        description: 'Cluster size'
+        required: true
+        default: '4'
+      parameters:
+        description: 'Parameters file'
+        required: true
+        default: './mlops/azureml/train/pipeline.yml'
+
+
+
+jobs:
+  set-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: AZ Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Install az ml
+        run: |
+          az extension add --name azure-cli-ml
+          az extension update --name azure-cli-ml
+        shell: bash
+
+  register-environment:
+    runs-on: ubuntu-latest
+    needs: set-up
+    steps:
+      - name: Create environment(image) for training
+        run: |
+          az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} \
+           --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }}
+        shell: bash
+
+  create-compute:
+    runs-on: ubuntu-latest
+    needs: [set-up,register-environment]
+    steps:
+      - name: Create Compute Cluster
+        run: |
+          az ml compute create --name ${{ inputs.cluster_name }} \
+                                  --type AmlCompute \
+                                  --tier "dedicated" \
+                                  --size ${{inputs.node_sku}} \
+                                  --min-instances 0 \
+                                  --max-instances ${{ inputs.cluster_size }} \
+                                  --resource-group ${{ inputs.resource_group }} \
+                                  --workspace-name ${{ inputs.aml_workspace }}
+        shell: bash
+
+  run-pipeline:
+    runs-on: ubuntu-latest
+    needs: [set-up,register-environment, create-compute]
+    steps:
+      - name: Run Azure ML pipeline
+        run: |
+          run_id=$(az ml job create --file ${{ github.workspace }}/${{ inputs.parameters  }} --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }} --query name -o tsv)
+          if [[ -z "$run_id" ]]
+          then
+            echo "Job creation failed"
+            exit 3
+          fi
+          az ml job show -n $run_id --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }} --web 
+          status=$(az ml job show -n $run_id --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }} --query status -o tsv)
+          if [[ -z "$status" ]]
+          then
+            echo "Status query failed"
+            exit 4
+          fi
+          running=("NotStarted" "Queued" "Starting" "Preparing" "Running" "Finalizing" "CancelRequested")
+          while [[ ${running[*]} =~ $status ]]
+          do
+            sleep 15 
+            status=$(az ml job show -n $run_id --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }} --query status -o tsv)
+            echo $status
+          done
+          if [[ "$status" != "Completed" ]]  
+          then
+            echo "Training Job failed or canceled"
+            exit 3
+          fi
+        
+        shell: bash
+
