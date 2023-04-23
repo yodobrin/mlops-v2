@@ -4,18 +4,27 @@ description: 'A composite action to allocate traffic for an Azure Machine Learni
 inputs:
   endpoint_name:
     description: 'Name of the Azure Machine Learning online endpoint'
+    type: string
     required: true
   resource_group:
     description: 'Name of the Azure resource group'
+    type: string
     required: true
   workspace_name:
     description: 'Name of the Azure Machine Learning workspace'
+    type: string
     required: true
   traffic_allocation:
     description: 'Traffic allocation for the Azure Machine Learning online endpoint'
+    type: string
+    required: true
+  deploy_name:
+    description: 'Name of the Azure Machine Learning deployment'
+    type: string
     required: true
   creds:
     description: 'Azure credentials to authenticate with the Azure subscription'
+    type: string
     required: true
 runs:
   using: 'composite'

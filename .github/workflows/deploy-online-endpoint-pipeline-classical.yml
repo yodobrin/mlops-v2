@@ -46,6 +46,7 @@ jobs:
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}
+          deployment_name: ${{ inputs.deployment_name }}
           endpoint_type: 'online'
           creds: ${{ secrets.AZURE_CREDENTIALS }}
   create-deployment:
