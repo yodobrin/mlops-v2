@@ -45,8 +45,7 @@ jobs:
           endpoint_file: ${{ inputs.endpoint_file }}          
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }}
-          endpoint_name: ${{ inputs.endpoint_name }}
-          deployment_name: ${{ inputs.deployment_name }}
+          endpoint_name: ${{ inputs.endpoint_name }}          
           endpoint_type: 'online'
           creds: ${{ secrets.AZURE_CREDENTIALS }}
   create-deployment:
@@ -59,6 +58,7 @@ jobs:
         uses: ./.github/actions/create-deployment
         with:
           deployment_file: ${{ inputs.deployment_file }}
+          deployment_name: ${{ inputs.deployment_name }}
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}
