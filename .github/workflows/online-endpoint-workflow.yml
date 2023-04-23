@@ -1,4 +1,4 @@
-name: deploy-online-endpoint-pipeline
+name: Online Endpoint Deployment - Workflow
 
 on: 
   workflow_dispatch:
