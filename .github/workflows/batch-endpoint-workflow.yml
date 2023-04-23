@@ -1,0 +1,92 @@
+name: deploy-batch-endpoint-pipeline
+
+on: 
+  workflow_dispatch:
+    inputs:
+      resource_group:
+        description: 'Resource group name'
+        required: true
+        default: 'rg-ydamlv12-yd202304dev'
+      aml_workspace:
+        description: 'AML workspace name'
+        required: true
+        default: 'mlw-ydamlv12-yd202304dev'
+      cluster_name:
+        description: 'AML Batch Compute cluster name'
+        required: true
+        default: 'batch-cluster'    
+      deployment_file:
+        description: 'Deployment file'
+        required: true
+        default: 'mlops/azureml/deploy/batch/batch-deployment.yml'
+      endpoint_file:
+        description: 'Endpoint file'
+        required: true
+        default: 'mlops/azureml/deploy/batch/batch-endpoint.yml'
+      endpoint_name:
+        description: 'Endpoint name'
+        required: true
+        default: 'taxi-gha-batch'
+      endpoint_type:
+        description: 'Endpoint type'
+        required: true
+        default: 'batch'
+      deployment_name:
+        description: 'Deployment name'
+        required: true
+        default: 'taxi-gha-batch'
+env:
+  endpoint_type: 'batch-endpoint'
+  deployment_type: 'batch-deployment'
+  node_sku: Standard_DS3_v2
+  cluster_size: 3
+
+jobs:
+
+  deploy-batch-endpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  
+      - name: Install Azure ML extension
+        run: |
+          az extension add -n ml -y
+        shell: bash
+  
+      - name: Update Azure ML extension
+        run: |
+          az extension update -n ml
+        shell: bash
+
+
+      - name: Create environment from file with conda
+        run: |
+            az ml compute create --name ${{ inputs.cluster_name }} \
+                                    --type AmlCompute \
+                                    --tier "dedicated" \
+                                    --size $node_sku \
+                                    --min-instances 0 \
+                                    --max-instances $cluster_size \
+                                    --resource-group ${{ inputs.resource_group }} \
+                                    --workspace-name ${{ inputs.aml_workspace }}
+        shell: bash
+  
+      - name: Create endpoint
+        run: |
+          az ml $endpoint_type create --name ${{ inputs.endpoint_name }} \
+          -f ${{ github.workspace }}/${{ inputs.endpoint_file }} --resource-group ${{ inputs.resource_group }} \
+          --workspace-name ${{ inputs.aml_workspace }}
+        shell: bash
+        
+      - name: Create deployment
+        run: |
+          az ml $deployment_type create --name ${{ inputs.deployment_name }} --endpoint ${{ inputs.endpoint_name }} \
+          -f ${{ github.workspace }}/${{ inputs.deployment_file }} --resource-group ${{ inputs.resource_group }} \
+          --workspace-name ${{ inputs.aml_workspace }}
+        shell: bash
+

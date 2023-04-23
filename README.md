@@ -303,17 +303,45 @@ The GitHub workflows in this repositoryare designed to automate the process of:
 
 - Online and bacth deployment of the model using Azure Machine Learning service.
 
-These workflows are triggered by the "workflow_dispatch" event, which means that it can be manually triggered by the user. When a workflow is triggered, it asks the user to provide few inputs for example: the name of the resource group where the Azure resources are located, the name of the Azure Machine Learning workspace, and the name of the AML compute cluster to use for training the model.  
+This repo includes two variation of workflows, one type is leveraging composite workflow, and the other type using workflow steps. It would be up-to-you to decide which type to take.
 
-The workflow is divided into several jobs, each of which performs a specific task, the following are example of the training workflow: 
 
-- The "register-environment" job registers the conda environment that is needed for training the model in the Azure Machine Learning workspace. This job checks out the repository and uses a custom action called "register-environment" to register the environment. The action takes three inputs: the environment file, the name of the resource group, and the name of the workspace. 
 
-- The "create-compute" job creates an Azure Machine Learning compute cluster with the specified name, size, and node SKU. This job also checks out the repository and uses a custom action called "create-compute" to create the cluster. The action takes several inputs, including the name of the resource group, the name of the workspace, the name of the cluster, the cluster size, and the node SKU. 
+#### Training workflow
 
-- The "run-pipeline" job runs the machine learning pipeline that trains the model. This job checks out the repository and uses a custom action called "run-pipeline" to run the pipeline. The action takes several inputs, including the name of the resource group, the name of the workspace, the credentials needed to authenticate with Azure, and the location of the pipeline YAML file. 
+```deploy-model-training-pipeline-classical.yml``` is designed to deploy a machine learning model training pipeline on Microsoft Azure. In summary, this workflow automates the process of setting up the environment, creating a compute cluster, and running a machine learning model training pipeline on Azure.
 
-Overall, workflows automates the process of training and deploying a machine learning model using Azure Machine Learning service, making it easier for data scientists to deploy their models quickly and efficiently.
+The workflow has three main jobs:  
+
+- Register environment: This job checks out the code repository and registers the environment using a YAML file called "train-env.yml". This environment is required for the pipeline to run successfully. The job creates an environment in the Azure Machine Learning workspace specified in the input and the environment is used for training the machine learning model. 
+
+- Create compute: This job checks out the code repository and creates a compute cluster in the same Azure Machine Learning workspace specified in the input. This cluster is used to train the machine learning model. The job uses the resource group and AML workspace name provided in the input to create the compute cluster. 
+
+- Run pipeline: This job checks out the code repository and runs the machine learning model training pipeline using a YAML file called "pipeline.yml". The pipeline is executed on the compute cluster created in the previous job. The job uses the resource group and AML workspace name provided in the input to run the pipeline. 
+
+Overall, the workflow automates the process of setting up the environment, creating a compute cluster, and running a machine learning model training pipeline on Microsoft Azure. This allows for a faster and more streamlined process of deploying a machine learning model on Azure.
+
+
+#### Deploy to an online endpoint
+
+```deploy-online-endpoint-pipeline-classical.yml``` is designed to deploy a machine learning model as online endpoint. The workflow is triggered by a manual event, which prompts the user to input several parameters including the name of the resource group and Azure Machine Learning workspace, the deployment and endpoint files, and the name of the endpoint and deployment.  
+
+The workflow consists of three jobs, each of which runs on a Ubuntu virtual machine. The first job, "create-endpoint", checks out the repository and creates the endpoint using a custom GitHub action. The second job, "create-deployment", checks out the repository and creates the deployment using another custom GitHub action. The third job, "allocate-traffic", checks out the repository and allocates traffic to the deployment using a third custom GitHub action.  
+
+Each job requires the output of the previous job to run, so the "create-deployment" job needs the "create-endpoint" job to finish first, and the "allocate-traffic" job needs the "create-deployment" job to finish first.  
+
+Overall, this workflow automates the process of deploying a machine learning model as an online endpoint on Azure.
+
+#### Deploy to a batch endpoint
+
+```deploy-batch-endpoint-pipeline-classical.yml``` the inputs for the workflow are the name of the resource group, AML workspace, AML Batch Compute cluster name, deployment file, endpoint file, endpoint name, endpoint type, and deployment name. 
+
+The workflow has three jobs: 
+create-compute: This job checks out the code repository and creates a compute cluster in the same Azure Machine Learning workspace specified in the input. This compute cluster is used to run the batch endpoint pipeline. The job uses the resource group and AML workspace name provided in the input to create the compute cluster. 
+create-endpoint: This job checks out the code repository and creates an endpoint in the same Azure Machine Learning workspace specified in the input. This endpoint is used to host the batch scoring service. The job uses the resource group, AML workspace name, and endpoint details provided in the input to create the endpoint. 
+create-deployment: This job checks out the code repository and creates a deployment in the same Azure Machine Learning workspace specified in the input. This deployment is used to deploy the batch scoring service to the endpoint created in the previous job. The job uses the resource group, AML workspace name, endpoint details, and deployment details provided in the input to create the deployment. 
+
+Overall, the workflow automates the process of creating a compute cluster, an endpoint, and a deployment to deploy a batch endpoint pipeline on Microsoft Azure. This allows for a faster and more streamlined process of deploying a batch endpoint pipeline on Azure.
 
 ### Creating a service principal
 
