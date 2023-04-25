@@ -62,8 +62,11 @@ jobs:
         run: |
           az extension update -n ml
         shell: bash
-
-
+        
+      - name: Get file name
+        run: |
+         echo "::set-output name=FILELIST::$(find . -name '*-deployment.yml' -print)"
+        shell: bash
       - name: Create environment from file with conda
         run: |
             az ml compute create --name ${{ inputs.cluster_name }} \
