@@ -218,7 +218,7 @@ data-science/
 │   │   │   └── evaluate.py
 │   │   │   └── register.py 
 │   │   ├── environment/  
-│   │   │   └── model1_environment_conda.yml  
+│   │   │   └── dependencies.yml  
 │   │   │   └── model1_environment_docker.yml  
 │   │   └── README.md  
 │   │  
