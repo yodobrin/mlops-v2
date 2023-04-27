@@ -43,7 +43,7 @@ runs:
       
     - name: Create endpoint
       run: |
-        az ml ${{ inputs.endpoint_type }}-endpoint create --name ${{ inputs.endpoint_name }} \
+        az ml ${{ inputs.endpoint_type }} create --name ${{ inputs.endpoint_name }} \
         -f ${{ github.workspace }}/${{ inputs.endpoint_file }} --resource-group ${{ inputs.resource_group }} \
         --workspace-name ${{ inputs.workspace_name }}
       shell: bash

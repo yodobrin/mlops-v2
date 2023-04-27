@@ -19,7 +19,7 @@ on:
       environment_file:
         description: 'Environment file'
         required: true
-        default: './mlops/azureml/train/train-env.yml'
+        default: './data-science/models/model-1/environment/model1-train-env.yml'
       node_sku:
         description: 'Node SKU'
         required: true
@@ -31,7 +31,7 @@ on:
       parameters:
         description: 'Parameters file'
         required: true
-        default: './mlops/azureml/train/pipeline.yml'
+        default: './mlops/azureml/train/model1-pipeline.yml'
 
 
 

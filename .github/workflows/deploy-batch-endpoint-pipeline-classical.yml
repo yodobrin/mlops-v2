@@ -18,15 +18,15 @@ on:
       deployment_file:
         description: 'Deployment file'
         required: true
-        default: 'mlops/azureml/deploy/batch/batch-deployment.yml'
+        default: 'mlops/azureml/deploy/batch/model1-batch-deployment.yml'
       endpoint_file:
         description: 'Endpoint file'
         required: true
-        default: 'mlops/azureml/deploy/batch/batch-endpoint.yml'
+        default: 'mlops/azureml/deploy/batch/model1-batch-endpoint.yml'
       endpoint_name:
         description: 'Endpoint name'
         required: true
-        default: 'taxi-gha-batch'
+        default: 'model1-batch'
       endpoint_type:
         description: 'Endpoint type'
         required: true
@@ -34,7 +34,13 @@ on:
       deployment_name:
         description: 'Deployment name'
         required: true
-        default: 'taxi-gha-batch'
+        default: 'model1-batch'
+env:
+  endpoint_type: 'batch-endpoint'
+  deployment_type: 'batch-deployment'
+  node_sku: Standard_DS3_v2
+  cluster_size: 3
+        
 jobs:
 
   create-compute:
@@ -48,8 +54,8 @@ jobs:
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }} 
           compute_name: ${{ inputs.cluster_name }} 
-          cluster_size: 5
-          node_sku: Standard_DS3_v2
+          cluster_size: $cluster_size
+          node_sku: $node_sku
           creds: ${{ secrets.AZURE_CREDENTIALS }}     
   create-endpoint:
     runs-on: ubuntu-latest
@@ -64,7 +70,7 @@ jobs:
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}
-          endpoint_type: batch
+          endpoint_type: $endpoint_type
           creds: ${{ secrets.AZURE_CREDENTIALS }}
   create-deployment:
     runs-on: ubuntu-latest
@@ -80,5 +86,5 @@ jobs:
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}
           deployment_name: ${{ inputs.deployment_name }}
-          endpoint_type: batch          
+          endpoint_type: $endpoint_type       
           creds: ${{ secrets.AZURE_CREDENTIALS }}

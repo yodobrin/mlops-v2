@@ -16,6 +16,23 @@ on:
         description: 'AML compute cluster name'
         required: true
         default: 'cpu-cluster'
+      environment_file:
+        description: 'Environment file'
+        required: true
+        default: './data-science/models/model-1/environment/model1-train-env.yml'
+      node_sku:
+        description: 'Node SKU'
+        required: true
+        default: 'Standard_DS3_v2'
+      cluster_size:
+        description: 'Cluster size'
+        required: true
+        default: '4'
+      parameters:
+        description: 'Parameters file'
+        required: true
+        default: './mlops/azureml/train/model1-pipeline.yml'
+
 jobs:
 
   register-environment:
@@ -26,7 +43,7 @@ jobs:
         - name: Register Environment
           uses: ./.github/actions/register-environment
           with:
-            environment_file: mlops/azureml/train/train-env.yml
+            environment_file: ${{ inputs.environment_file }}
             resource_group: ${{ inputs.resource_group }}
             workspace_name: ${{ inputs.aml_workspace }}  
             creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -42,8 +59,8 @@ jobs:
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }} 
           compute_name: ${{ inputs.cluster_name }} 
-          cluster_size: 4
-          node_sku: Standard_DS3_v2
+          cluster_size: ${{ inputs.cluster_size }}
+          node_sku: ${{ inputs.node_sku }}
           creds: ${{ secrets.AZURE_CREDENTIALS }}   
   run-pipeline:
     runs-on: ubuntu-latest
@@ -57,5 +74,5 @@ jobs:
           resource_group: ${{ inputs.resource_group }}
           workspace_name: ${{ inputs.aml_workspace }} 
           creds: ${{ secrets.AZURE_CREDENTIALS }}   
-          parameters: ./mlops/azureml/train/pipeline.yml
+          parameters: ${{ inputs.parameters }}
 

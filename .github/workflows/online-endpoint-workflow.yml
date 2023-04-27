@@ -14,11 +14,11 @@ on:
       deployment_file:
         description: 'Deployment file'
         required: true
-        default: 'mlops/azureml/deploy/online/online-deployment.yml'
+        default: 'mlops/azureml/deploy/online/model1-online-deployment.yml'
       endpoint_file:
         description: 'Endpoint file'
         required: true
-        default: 'mlops/azureml/deploy/online/online-endpoint.yml'
+        default: 'mlops/azureml/deploy/online/model1-online-endpoint.yml'
       endpoint_name:
         description: 'Endpoint name'
         required: true

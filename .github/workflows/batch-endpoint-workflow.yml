@@ -18,15 +18,15 @@ on:
       deployment_file:
         description: 'Deployment file'
         required: true
-        default: 'mlops/azureml/deploy/batch/batch-deployment.yml'
+        default: 'mlops/azureml/deploy/batch/model1-batch-deployment.yml'
       endpoint_file:
         description: 'Endpoint file'
         required: true
-        default: 'mlops/azureml/deploy/batch/batch-endpoint.yml'
+        default: 'mlops/azureml/deploy/batch/model1-batch-endpoint.yml'
       endpoint_name:
         description: 'Endpoint name'
         required: true
-        default: 'taxi-gha-batch'
+        default: 'model1-batch'
       endpoint_type:
         description: 'Endpoint type'
         required: true
@@ -34,7 +34,7 @@ on:
       deployment_name:
         description: 'Deployment name'
         required: true
-        default: 'taxi-gha-batch'
+        default: 'model1-batch'
 env:
   endpoint_type: 'batch-endpoint'
   deployment_type: 'batch-deployment'
