@@ -21,6 +21,9 @@ inputs:
   deployment_name:
     required: true
     type: string
+  deployment_type:
+    required: true
+    type: string
   creds:
     required: true
     
@@ -47,7 +50,7 @@ runs:
 
     - name: Create deployment
       run: |
-        az ml ${{ inputs.endpoint_type }} create --name ${{ inputs.deployment_name }} --endpoint ${{ inputs.endpoint_name }} \
+        az ml ${{ inputs.deployment_type }} create --name ${{ inputs.deployment_name }} --endpoint ${{ inputs.endpoint_name }} \
         -f ${{ github.workspace }}/${{ inputs.deployment_file }} --resource-group ${{ inputs.resource_group }} \
         --workspace-name ${{ inputs.workspace_name }}
       shell: bash

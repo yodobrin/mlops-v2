@@ -66,6 +66,7 @@ jobs:
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}
           endpoint_type: $endpoint_type         
+          deployment_type: $deployment_type
           creds: ${{ secrets.AZURE_CREDENTIALS }}
   allocate_traffic:
     runs-on: ubuntu-latest
