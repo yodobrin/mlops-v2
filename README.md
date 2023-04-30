@@ -11,9 +11,8 @@ The approach currently leverages few key areas:
 
 - AML CLI (V2) YAML schema - see our [docs](https://learn.microsoft.com/azure/machine-learning/reference-yaml-overview)
 
-This repository provides a good starting point to get you started with MLOps. It uses Azure Machine Learning (AML) CLI V2, DevOps pipeline (soon to be added) or GitHub actions, and AML CLI YAML schema. To start, clone or fork the repo and follow the steps in the Prerequisites & Setup section. You can work with multiple models, and the directory structure and deployment code should be hosted under the `data-science` and `mlops/azureml` folders, respectively. The GitHub workflows in this repository automate the process of training and deploying a machine learning model using Azure Machine Learning service.
+This repository provides a starting point to get you started with MLOps. It uses Azure Machine Learning (AML) CLI V2, GitHub actions, and AML CLI YAML schema. To start, clone or fork the repo and follow the steps in the Prerequisites & Setup section. You can work with multiple models, and the directory structure and deployment code should be hosted under the `data-science` and `mlops/azureml` folders, respectively. The GitHub workflows in this repository automate the process of training and deploying a machine learning model using Azure Machine Learning service.
 
-> Note: You will need to expand the collapsed section to allow table of content navigation.
 
 ## Table of Contents
 
@@ -32,9 +31,10 @@ This repository provides a good starting point to get you started with MLOps. It
     - [Understanding the GitHub workflow](#understanding-the-github-workflow)
     - [Creating a service principal](#creating-a-service-principal)
     - [Running the pipelines](#running-the-pipelines)
+- [CLI vs. SDK](#cli-vs-sdk)
 
-<details id="prerequisites--setup">
-<summary style="font-size: 24px; font-weight: bold;">Prerequisites & Setup</summary>
+
+## Prerequisites & Setup
 
 
 Cloning or forking this repo.
@@ -193,10 +193,10 @@ base_url=<URL of the online/batch end-point>
 api_key=<API key>
 
 ```
-</details>
 
-<details id="working-with-multiple-models">
-<summary style="font-size: 24px; font-weight: bold;">Working with multiple models</summary>
+
+
+## Working with multiple models
 
 
 It is a common practice to have multiple models for different scenarios. Each of these models will have diffrent code, enviorment, compute, etc. In this section we will see how to work with multiple models.
@@ -269,11 +269,9 @@ mlops/
 │
 └── ...
 ```
-</details>
 
 
-<details id="putting-it-all-together">
-<summary style="font-size: 24px; font-weight: bold;">Putting it all together</summary>
+## Putting it all together
 
 We have discussed the required components to build a MLOps pipeline. In this section we will see how to put it all together. We will use the taxi model as an example. The use of GitHUb actions is optional. You can use any other CI/CD tool.
 
@@ -292,58 +290,10 @@ There are several alternatives to start a GitHub workflow, including:
 
 These are some of the most common alternatives to start a GitHub workflow. Each of them can be configured to suit different use cases and requirements. 
 
-GitHub, or any other CI/CD tool, will need to be authorized to access the Azure resources. This can be done by creating a service principal. The service principal will be used to authenticate the CI/CD tool to Azure. This identity will be used to create the Azure resources and to run the Azure ML pipelines. It will need to have a `contributor` role on the resource group or the subscription, depending if you want to use this identity to create the resource group or not.
-
-### Understanding the GitHub workflow 
-
-
-The GitHub workflows in this repositoryare designed to automate the process of:
-
-- Training a machine learning model using Azure Machine Learning service.
-
-- Online and bacth deployment of the model using Azure Machine Learning service.
-
-This repo includes two variation of workflows, one type is leveraging composite workflow, and the other type using workflow steps. It would be up-to-you to decide which type to take.
-
-
-
-#### Training workflow
-
-```deploy-model-training-pipeline-classical.yml``` is designed to deploy a machine learning model training pipeline on Microsoft Azure. In summary, this workflow automates the process of setting up the environment, creating a compute cluster, and running a machine learning model training pipeline on Azure.
-
-The workflow has three main jobs:  
-
-- Register environment: This job checks out the code repository and registers the environment using a YAML file called "train-env.yml". This environment is required for the pipeline to run successfully. The job creates an environment in the Azure Machine Learning workspace specified in the input and the environment is used for training the machine learning model. 
-
-- Create compute: This job checks out the code repository and creates a compute cluster in the same Azure Machine Learning workspace specified in the input. This cluster is used to train the machine learning model. The job uses the resource group and AML workspace name provided in the input to create the compute cluster. 
-
-- Run pipeline: This job checks out the code repository and runs the machine learning model training pipeline using a YAML file called "pipeline.yml". The pipeline is executed on the compute cluster created in the previous job. The job uses the resource group and AML workspace name provided in the input to run the pipeline. 
-
-Overall, the workflow automates the process of setting up the environment, creating a compute cluster, and running a machine learning model training pipeline on Microsoft Azure. This allows for a faster and more streamlined process of deploying a machine learning model on Azure.
-
-
-#### Deploy to an online endpoint
-
-```deploy-online-endpoint-pipeline-classical.yml``` is designed to deploy a machine learning model as online endpoint. The workflow is triggered by a manual event, which prompts the user to input several parameters including the name of the resource group and Azure Machine Learning workspace, the deployment and endpoint files, and the name of the endpoint and deployment.  
-
-The workflow consists of three jobs, each of which runs on a Ubuntu virtual machine. The first job, "create-endpoint", checks out the repository and creates the endpoint using a custom GitHub action. The second job, "create-deployment", checks out the repository and creates the deployment using another custom GitHub action. The third job, "allocate-traffic", checks out the repository and allocates traffic to the deployment using a third custom GitHub action.  
-
-Each job requires the output of the previous job to run, so the "create-deployment" job needs the "create-endpoint" job to finish first, and the "allocate-traffic" job needs the "create-deployment" job to finish first.  
-
-Overall, this workflow automates the process of deploying a machine learning model as an online endpoint on Azure.
-
-#### Deploy to a batch endpoint
-
-```deploy-batch-endpoint-pipeline-classical.yml``` the inputs for the workflow are the name of the resource group, AML workspace, AML Batch Compute cluster name, deployment file, endpoint file, endpoint name, endpoint type, and deployment name. 
-
-The workflow has three jobs: 
-create-compute: This job checks out the code repository and creates a compute cluster in the same Azure Machine Learning workspace specified in the input. This compute cluster is used to run the batch endpoint pipeline. The job uses the resource group and AML workspace name provided in the input to create the compute cluster. 
-create-endpoint: This job checks out the code repository and creates an endpoint in the same Azure Machine Learning workspace specified in the input. This endpoint is used to host the batch scoring service. The job uses the resource group, AML workspace name, and endpoint details provided in the input to create the endpoint. 
-create-deployment: This job checks out the code repository and creates a deployment in the same Azure Machine Learning workspace specified in the input. This deployment is used to deploy the batch scoring service to the endpoint created in the previous job. The job uses the resource group, AML workspace name, endpoint details, and deployment details provided in the input to create the deployment. 
-
-Overall, the workflow automates the process of creating a compute cluster, an endpoint, and a deployment to deploy a batch endpoint pipeline on Microsoft Azure. This allows for a faster and more streamlined process of deploying a batch endpoint pipeline on Azure.
 
 ### Creating a service principal
+
+As GitHub action would need to perform actions on Azure, it will need to be authorized to do so. This can be done by creating a service principal. The service principal will be used to authenticate the GitHub action to Azure. This identity will be used to create the Azure resources and to run the Azure ML pipelines. It will need to have a `contributor` role on the resource group or the subscription, depending if you want to use this identity to create the resource group or not.
 
 ```azurecli
 az login
@@ -356,6 +306,58 @@ The above command will return a json object with the service principal credentia
 There multiple blog posts and documentation on how to create a service principal. You can find more information [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal).
 
 Similarly, there are multiple documents, explaining how to create a GitHub secret. You can find more information [here](https://docs.github.com/en/actions/reference/encrypted-secrets).
+
+
+### Understanding the GitHub workflow 
+
+The GitHub workflows in this repository are designed to automate the process of:
+
+- Training a machine learning model using Azure Machine Learning service.
+
+- Online and bacth deployment of the model using Azure Machine Learning service.
+
+This repo includes two variation of workflows, one type is leveraging composite workflow, and the other type using workflow steps. It would be up-to-you to decide which type to take.
+
+The composite workflows would be more suitable for larger teams, with established Ops team.
+
+Since both types of workflows are using the same set of actions, we will only discuss the composite workflow in this section.
+
+#### Training workflow:  ```deploy-model-training-pipeline-classical.yml``` 
+
+Is designed to deploy a machine learning model training pipeline on Microsoft Azure. In summary, this workflow automates the process of setting up the environment, creating a compute cluster, and running a machine learning model training pipeline on Azure.
+
+The workflow has three main jobs:  
+
+- Register environment: This job checks out the code repository and registers the environment using a YAML file called "train-env.yml". This environment is required for the pipeline to run successfully. The job creates an environment in the Azure Machine Learning workspace specified in the input and the environment is used for training the machine learning model. 
+
+- Create compute: This job checks out the code repository and creates a compute cluster in the same Azure Machine Learning workspace specified in the input. This cluster is used to train the machine learning model. The job uses the resource group and AML workspace name provided in the input to create the compute cluster. 
+
+- Run pipeline: This job checks out the code repository and runs the machine learning model training pipeline using a YAML file called "pipeline.yml". The pipeline is executed on the compute cluster created in the previous job. The job uses the resource group and AML workspace name provided in the input to run the pipeline. 
+
+Overall, the workflow automates the process of setting up the environment, creating a compute cluster, and running a machine learning model training pipeline on Microsoft Azure. This allows for a faster and more streamlined process of deploying a machine learning model on Azure.
+
+
+#### Deploy to an online endpoint: ```deploy-online-endpoint-pipeline-classical.yml```
+
+Is designed to deploy a machine learning model as online endpoint. The workflow is triggered by a manual event, which prompts the user to input several parameters including the name of the resource group and Azure Machine Learning workspace, the deployment and endpoint files, and the name of the endpoint and deployment.  
+
+The workflow consists of three jobs, each of which runs on a Ubuntu virtual machine. The first job, "create-endpoint", checks out the repository and creates the endpoint using a custom GitHub action. The second job, "create-deployment", checks out the repository and creates the deployment using another custom GitHub action. The third job, "allocate-traffic", checks out the repository and allocates traffic to the deployment using a third custom GitHub action.  
+
+Each job requires the output of the previous job to run, so the "create-deployment" job needs the "create-endpoint" job to finish first, and the "allocate-traffic" job needs the "create-deployment" job to finish first.  
+
+Overall, this workflow automates the process of deploying a machine learning model as an online endpoint on Azure.
+
+#### Deploy to a batch endpoint: ```deploy-batch-endpoint-pipeline-classical.yml```
+
+The inputs for the workflow are the name of the resource group, AML workspace, AML Batch Compute cluster name, deployment file, endpoint file, endpoint name, endpoint type, and deployment name. 
+
+The workflow has three jobs: 
+create-compute: This job checks out the code repository and creates a compute cluster in the same Azure Machine Learning workspace specified in the input. This compute cluster is used to run the batch endpoint pipeline. The job uses the resource group and AML workspace name provided in the input to create the compute cluster. 
+create-endpoint: This job checks out the code repository and creates an endpoint in the same Azure Machine Learning workspace specified in the input. This endpoint is used to host the batch scoring service. The job uses the resource group, AML workspace name, and endpoint details provided in the input to create the endpoint. 
+create-deployment: This job checks out the code repository and creates a deployment in the same Azure Machine Learning workspace specified in the input. This deployment is used to deploy the batch scoring service to the endpoint created in the previous job. The job uses the resource group, AML workspace name, endpoint details, and deployment details provided in the input to create the deployment. 
+
+Overall, the workflow automates the process of creating a compute cluster, an endpoint, and a deployment to deploy a batch endpoint pipeline on Microsoft Azure. This allows for a faster and more streamlined process of deploying a batch endpoint pipeline on Azure.
+
 
 
 ### Running the pipelines
@@ -372,4 +374,40 @@ The following diagram shows the steps involved in the training pipeline:
 
 As part of this repository, we have included a GitHub workflow that automates the process of deploying the model as a web service. Follow this document to better understand the key use cases for online and batch deployment. Please review this [document](https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints?view=azureml-api-2) to better understand the key use cases for online and batch deployment.
 
-</details>
+![online deployment](/images/2023-04-30-17-22-49.png)
+
+![batch deployment](/images/2023-04-30-17-24-16.png)
+
+
+
+
+## CLI vs SDK
+
+As these alternatives are available, you may be wondering which one to use. The following table summarizes the main differences between the v2 CLI and the Python SDK in Azure Machine Learning (AML):
+
+| Aspect | v2 CLI | Python SDK |
+| --- | --- | --- |
+| Interface | Command line | Code |
+| Flexibility | Limited | High |
+| Learning curve | Low | High |
+| Integration with other tools | Limited | High |
+| Compatibility | Windows, macOS, Linux | Python environment required |
+
+
+- [CLI](https://docs.microsoft.com/en-us/cli/azure/ext/azure-cli-ml/ml?view=azure-cli-latest)
+
+- [SDK](https://docs.microsoft.com/en-us/python/api/overview/azure/ml/?view=azure-ml-py)
+
+The main differences between using the v2 CLI and the Python SDK in Azure Machine Learning (AML) are:
+
+Command line interface vs. code: The v2 CLI provides a command line interface to interact with AML, while the Python SDK allows you to use code to interact with AML.
+
+Flexibility and customizability: With the Python SDK, you have more flexibility and customizability compared to the v2 CLI. You can write your own code and use various Python libraries and frameworks to implement your machine learning workflows. On the other hand, the v2 CLI provides a set of pre-defined commands that you can use to execute common tasks in AML.
+
+Learning curve: The learning curve for the v2 CLI is generally considered to be lower compared to the Python SDK. This is because the v2 CLI is designed to be intuitive and easy to use, with a simple set of commands that can be learned quickly. The Python SDK, on the other hand, requires a higher level of expertise in Python programming.
+
+Integration with other tools: The Python SDK can be integrated with other tools and frameworks, such as Jupyter notebooks, PyCharm, Visual Studio, and many others. This allows you to seamlessly integrate your AML workflows with your existing development environment. The v2 CLI does not have the same level of integration with other tools.
+
+Compatibility: The v2 CLI is compatible with Windows, macOS, and Linux operating systems, while the Python SDK requires a Python environment to be set up on your machine.
+
+In summary, the choice between using the v2 CLI or the Python SDK in Azure Machine Learning depends on your specific needs and level of expertise in Python programming. If you prefer a simple and easy-to-use command line interface, then the v2 CLI may be the best choice for you. If you need more flexibility and customizability, or if you want to integrate your AML workflows with other tools and frameworks, then the Python SDK may be a better fit.
