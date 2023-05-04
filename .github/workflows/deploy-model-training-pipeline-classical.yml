@@ -1,4 +1,4 @@
-name: deploy-model-training-pipeline
+name: Deploy Model Training Pipeline
 
 
 on: 
