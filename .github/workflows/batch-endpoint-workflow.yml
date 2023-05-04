@@ -1,4 +1,4 @@
-name: Batch Endpoint Deployment - Workflow
+name: Batch Endpoint Deployment
 
 on: 
   workflow_dispatch:
