@@ -1,4 +1,4 @@
-name: deploy-batch-endpoint-pipeline
+name: Deploy Batch Endpoint Pipeline
 
 on: 
   workflow_dispatch:
