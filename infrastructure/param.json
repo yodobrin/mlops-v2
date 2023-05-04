@@ -1,0 +1,10 @@
+{
+    "prefix": "example",
+    "postfix": "suffix",
+    "env": "dev",
+    "githubOrgOrUser": "example-org",
+    "githubRepo": "example-repo",
+    "githubBranch": "main",
+    "defaultAudience": "api://AzureADTokenExchange"
+  }
+  

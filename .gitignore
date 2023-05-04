@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 .vscode/
+infrastructure/param_local.json
