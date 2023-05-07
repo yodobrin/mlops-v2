@@ -33,7 +33,9 @@ on:
         required: true
         default: './mlops/azureml/train/model1-pipeline.yml'
 
-
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   WorkflowRun:
@@ -47,6 +49,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION }}
+          audience: api://AzureADTokenExchange
           # creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Install az ml
         run: |
