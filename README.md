@@ -95,16 +95,15 @@ Note for later use the following values:
 
 - workspace_name: `<Azure machine learning workspace name>`
 
-The provided bicep code, is also created a user assigned identity. It will authorize it as a `contributor` on the resource group. It will also address the federated credentials, where your forked repository will be used to trigger the GitHub actions. Please note, that the subject identifier is branch specific, so if you are using a different branch, you will need to update the token. The provisioning scripts will default the branch to be `main`. This can be done from the portal as well.
+The provided bicep code, is also creating a user assigned identity. It will authorize it as a `contributor` on the resource group. It will also address the federated credentials, where your forked repository will be used to trigger the GitHub actions. Please note, that the subject identifier is branch specific, so if you are using a different branch, you will need to update the token. The provisioning scripts will default the branch to be `main`. This can be done from the portal as well. I am discussing later in this document additional information about the [federated credentials](#authorizing-github-workflows-with-azure).
+
+![federated credentials](images/2023-05-07-15-22-09.png)
 
 ### 0.1 - CLI Setup / Update
 
 > Run the following commands from the main folder. It is recommended to keep your az extensions up to date.
 
 ```azurecli
-set -e # fail on error
-python -m pip install -U --force-reinstall pip pip install azure-cli==2.35
-az version
 az extension add -n ml -y
 az extension update -n ml
 az extension list
@@ -128,14 +127,16 @@ az configure --defaults group=<resource group name> workspace=<workspace name>
 
 ### 2 - Creating / Register an environment
 
-You could create either a docker based environment or a conda based environment.
+You could create a docker based environment with conda/pip based dependencies. Per model, you might have different dependencies. The following command will create an environment based on the provided yaml file. The environment will be registered in the workspace. Each time this commands run, it increments the version of the environment.
 
 Lets register an environment, run it from the main folder (docker)
 
 ```azurecli
-az ml environment create --file mlops/azureml/train/train-env.yml
+az ml environment create --file ./data-science/models/model-1/environment/model1-train-env.yml
 
 ```
+
+![registered environment](images/2023-05-07-15-30-41.png)
 
 ### 3 - Create a compute
 
@@ -158,11 +159,13 @@ az ml compute create --name cpu-cluster  --type amlcompute  --size Standard_DS3_
 ### 4 - Submit a training job (prep, train, evaluate, model registration)
 
 
-Now lets run a training job, submitting the job and then opening the web ui to monitor it. (This would work on mac/linux)
+Now lets run a training job, submitting the job and then opening the web ui to monitor it. In the suggested folder structure, I am using a training pipeline per model. 
+
+(This would work on mac/linux)
 
 ```azurecli
 
-run_id=$(az ml job create -f mlops/azureml/train/pipeline.yml --query name -o tsv)
+run_id=$(az ml job create -f mlops/azureml/train/model1-pipeline.yml --query name -o tsv)
 
 az ml job show -n $run_id --web
 
@@ -172,7 +175,7 @@ For windows, you can use the following __powershell__ command:
 
 ```powershell
 
-$run_id = az ml job create -f mlops/azureml/train/pipeline.yml --query name -o tsv  
+$run_id = az ml job create -f mlops/azureml/train/model1-pipeline.yml --query name -o tsv  
 az ml job show -Name $run_id --web  
 
 ```
@@ -183,7 +186,7 @@ So, we called a pipeline that perform few activities such as preprocessing, trai
 
 ```azurecli
 
-az ml online-endpoint create --name <your endpoint name> -f mlops/azureml/deploy/online/online-endpoint.yml
+az ml online-endpoint create --name <your endpoint name> -f mlops/azureml/deploy/online/model1-online-endpoint.yml
 
 ```
 
@@ -191,11 +194,11 @@ After the endpoint is created we can deploy the model to it.
 
 ```azurecli
 
-az ml online-deployment create --name taxi-online-dp --endpoint <your endpoint name> -f mlops/azureml/deploy/online/online-deployment.yml
+az ml online-deployment create --name taxi-online-dp --endpoint <your endpoint name> -f mlops/azureml/deploy/online/model1-online-deployment.yml
 
 ```
 
-after deployment, we need to route the traffic to the new model.
+after deployment, we need to route the traffic to the new model. You need to use the same `end-point-name` and `deployment-name` as used in the previous commands.
 
 ```azurecli
 
@@ -216,9 +219,9 @@ You could also test it directly from the web ui.
 
 ![web-ui-test](images/2023-03-22-09-20-32.png)
 
-You could also test it using other platforms, like using the SDK or the rest api.$
+You could also test it using other platforms, like using the SDK or the rest api.
 
-In the  web ui, you can acquire the scoring uri and the api key.
+In the web ui, you can acquire the scoring uri and the api key.
 
 ![consume](images/2023-03-22-09-23-53.png)
 
@@ -300,7 +303,7 @@ mlops/
 │   │   └── ...
 │   │
 │   ├── train/
-│   │   ├── pipeline.yml
+│   │   ├── model1-pipeline.yml
 │   │
 │   └── ...
 │
@@ -475,4 +478,4 @@ Integration with other tools: The Python SDK can be integrated with other tools 
 
 Compatibility: The v2 CLI is compatible with Windows, macOS, and Linux operating systems, while the Python SDK requires a Python environment to be set up on your machine.
 
-In summary, the choice between using the v2 CLI or the Python SDK in Azure Machine Learning depends on your specific needs and level of expertise in Python programming. If you prefer a simple and easy-to-use command line interface, then the v2 CLI may be the best choice for you. If you need more flexibility and customizability, or if you want to integrate your AML workflows with other tools and frameworks, then the Python SDK may be a better fit.
+In summary, the choice between using the v2 CLI or the Python SDK in Azure Machine Learning depends on your specific needs and level of expertise in Python programming. If you prefer a simple and easy-to-use command line interface, then the v2 CLI may be the best choice for you. If you need more flexibility and customization options, or if you want to integrate your AML workflows with other tools and frameworks, then the Python SDK may be a better fit.
