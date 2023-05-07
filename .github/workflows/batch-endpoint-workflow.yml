@@ -6,11 +6,11 @@ on:
       resource_group:
         description: 'Resource group name'
         required: true
-        default: 'rg-ydamlv12-yd202304dev'
+        default: 'rg-yo5-d23dev'
       aml_workspace:
         description: 'AML workspace name'
         required: true
-        default: 'mlw-ydamlv12-yd202304dev'
+        default: 'mlw-yo5-d23dev'
       cluster_name:
         description: 'AML Batch Compute cluster name'
         required: true
@@ -35,11 +35,20 @@ on:
         description: 'Deployment name'
         required: true
         default: 'model1-batch'
+  repository_dispatch:
+    types: [trigger_batch_endpoint]        
+      
 env:
   endpoint_type: 'batch-endpoint'
   deployment_type: 'batch-deployment'
   node_sku: Standard_DS3_v2
   cluster_size: 3
+  audience: api://AzureADTokenExchange
+
+permissions:
+  id-token: write
+  contents: read
+  
 
 jobs:
 
@@ -51,7 +60,11 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION }}
+          audience: ${{ env.audience }}
+          # creds: ${{ secrets.AZURE_CREDENTIALS }}
   
       - name: Install Azure ML extension
         run: |

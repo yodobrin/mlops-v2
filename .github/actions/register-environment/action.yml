@@ -15,19 +15,37 @@ inputs:
     description: 'Workspace Name'     
     required: true
     type: string    
-  creds:
-    description: 'Azure credentials'
+  azure_tenant_id:
+    description: 'Azure tenant ID'
+    type: string
     required: true
+  azure_client_id:
+    description: 'User Assigned - client ID'
+    type: string
+    required: true
+  azure_subscription:
+    description: 'Azure subscription ID'
+    type: string
+    required: true
+  audience:
+    description: 'Audience for the Azure Machine Learning online endpoint'
+    type: string
+    required: true
+
+
 runs:
   using: "composite"
   steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Azure Login
+    - name: Az CLI login
       uses: azure/login@v1
       with:
-        creds: ${{ inputs.creds }}
+          tenant-id: ${{ inputs.azure_tenant_id }}
+          client-id: ${{ inputs.azure_client_id }}
+          subscription-id: ${{ inputs.azure_subscription }}
+          audience: ${{ inputs.audience }}
 
     - name: Install Azure ML extension
       run: |

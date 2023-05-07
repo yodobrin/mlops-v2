@@ -7,11 +7,11 @@ on:
       resource_group:
         description: 'Resource group name'
         required: true
-        default: 'rg-ydamlv12-yd202304dev'
+        default: 'rg-yo5-d23dev'
       aml_workspace:
         description: 'AML workspace name'
         required: true
-        default: 'mlw-ydamlv12-yd202304dev'
+        default: 'mlw-yo5-d23dev'
       cluster_name:
         description: 'AML compute cluster name'
         required: true
@@ -32,8 +32,12 @@ on:
         description: 'Parameters file'
         required: true
         default: './mlops/azureml/train/model1-pipeline.yml'
+  repository_dispatch:
+    types: [trigger_model_train]        
 
-
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   WorkflowRun:
@@ -44,7 +48,11 @@ jobs:
       - name: AZ Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION }}
+          audience: api://AzureADTokenExchange
+          # creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Install az ml
         run: |
           az extension add -n ml
