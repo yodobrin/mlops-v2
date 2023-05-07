@@ -59,7 +59,7 @@ jobs:
           endpoint_type: $endpoint_type
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION }}  
+          azure_subscription: ${{ secrets.AZURE_SUBSCRIPTION }}  
           audience: ${{ env.audience }}
           # creds: ${{ secrets.AZURE_CREDENTIALS }}
   create-deployment:
@@ -80,7 +80,7 @@ jobs:
           deployment_type: $deployment_type
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION }}  
+          azure_subscription: ${{ secrets.AZURE_SUBSCRIPTION }}  
           audience: ${{ env.audience }}
           # creds: ${{ secrets.AZURE_CREDENTIALS }}
   allocate_traffic:
@@ -99,7 +99,7 @@ jobs:
           traffic_allocation: "${{ inputs.deployment_name }}=${{ inputs.traffic_percentile }}"          
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION }}  
+          azure_subscription: ${{ secrets.AZURE_SUBSCRIPTION }}  
           audience: ${{ env.audience }}
           # creds: ${{ secrets.AZURE_CREDENTIALS }}
 

@@ -1,10 +1,27 @@
 {
-    "prefix": "example",
-    "postfix": "suffix",
-    "env": "dev",
-    "githubOrgOrUser": "example-org",
-    "githubRepo": "example-repo",
-    "githubBranch": "main",
-    "defaultAudience": "api://AzureADTokenExchange"
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "value": "<your prefix>"
+    },
+    "postfix": {
+      "value": "<your postfix>"
+    },
+    "env": {
+      "value": "<prod/dev/test>"
+    },
+    "githubOrgOrUser": {
+      "value": "<the github user>"
+    },
+    "githubRepo": {
+      "value": "<the forked repository name>"
+    },
+    "githubBranch": {
+      "value": "main"
+    },
+    "defaultAudience": {
+      "value": "api://AzureADTokenExchange"
+    }
   }
-  
+}

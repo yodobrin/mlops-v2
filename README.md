@@ -23,7 +23,7 @@ This repository provides a starting point to get you started with MLOps. It uses
    - [1 - Connect to the workspace](#1---connect-to-the-workspace)
    - [2 - Creating / Register an environment](#2---creating--register-an-environment)
    - [3 - Create a compute](#3---create-a-compute)
-   - [4 - Submit a training job (prep, train, evaluate, model registeration)](#4---submit-a-training-job-prep-train-evaluate-model-registeration)
+   - [4 - Submit a training job (prep, train, evaluate, model registeration)](#4---submit-a-training-job-prep-train-evaluate-model-registration)
    - [5 - Deploy the model](#5---deploy-the-model)
    - [6 - Test the model](#6---test-the-model)
 - [Working with multiple models](#working-with-multiple-models)
@@ -46,19 +46,56 @@ The following command will create a resource group with all required resources. 
 Once the repo is cloned you can run the following command to create the resources, alternatively you could use existing azure machine learning workspace.
 
 
-> this command needs to run from the infrastructure folder
+This command needs to run from the infrastructure folder. Make sure to update the parameters file with the required values.
+
+```json
+
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "value": "<your prefix>"
+    },
+    "postfix": {
+      "value": "<your postfix>"
+    },
+    "env": {
+      "value": "<prod/dev/test>"
+    },
+    "githubOrgOrUser": {
+      "value": "<the github user>"
+    },
+    "githubRepo": {
+      "value": "<the forked repository name>"
+    },
+    "githubBranch": {
+      "value": "main"
+    },
+    "defaultAudience": {
+      "value": "api://AzureADTokenExchange"
+    }
+  }
+}
+```
 
 ```azurecli
 
-az deployment sub create --name <deployment-name> --location <location-of-the-service> --template-file main.bicep --parameters prefix=ydamlv2 postfix=yd2023 env=dev
+az deployment sub create --name <deployment-name> --location <location-of-the-service> --template-file main.bicep --parameters @param.json
 
 ```
+
+Once the command is completed, you can find the following resources:
+
+![provisioned resources](images/2023-05-07-13-14-26.png)
 
 Note for later use the following values:
 
 - resource_group: `<The resource group of aml>`
 
 - workspace_name: `<Azure machine learning workspace name>`
+
+The provided bicep code, is also created a user assigned identity. It will authorize it as a `contributor` on the resource group. It will also address the federated credentials, where your forked repository will be used to trigger the GitHub actions. Please note, that the subject identifier is branch specific, so if you are using a different branch, you will need to update the token. The provisioning scripts will default the branch to be `main`. This can be done from the portal as well.
 
 ### 0.1 - CLI Setup / Update
 
@@ -93,7 +130,7 @@ az configure --defaults group=<resource group name> workspace=<workspace name>
 
 You could create either a docker based environment or a conda based environment.
 
-Lets register an enviorment, run it from the main folder (docker)
+Lets register an environment, run it from the main folder (docker)
 
 ```azurecli
 az ml environment create --file mlops/azureml/train/train-env.yml
@@ -118,10 +155,10 @@ az ml compute create --name cpu-cluster  --type amlcompute  --size Standard_DS3_
 
 ```
 
-### 4 - Submit a training job (prep, train, evaluate, model registeration)
+### 4 - Submit a training job (prep, train, evaluate, model registration)
 
 
-Now lets run a training job, submiting the job and then opening the web ui to monitor it. (This would work on mac/linux)
+Now lets run a training job, submitting the job and then opening the web ui to monitor it. (This would work on mac/linux)
 
 ```azurecli
 
@@ -199,7 +236,7 @@ api_key=<API key>
 ## Working with multiple models
 
 
-It is a common practice to have multiple models for different scenarios. Each of these models will have diffrent code, enviorment, compute, etc. In this section we will see how to work with multiple models.
+It is a common practice to have multiple models for different scenarios. Each of these models will have different code, environment, compute, etc. In this section we will see how to work with multiple models.
 
 ### Directory structure
 
@@ -291,21 +328,17 @@ There are several alternatives to start a GitHub workflow, including:
 These are some of the most common alternatives to start a GitHub workflow. Each of them can be configured to suit different use cases and requirements. 
 
 
-### Creating a service principal
+### Authorizing GitHub workflows with Azure
 
-As GitHub action would need to perform actions on Azure, it will need to be authorized to do so. This can be done by creating a service principal. The service principal will be used to authenticate the GitHub action to Azure. This identity will be used to create the Azure resources and to run the Azure ML pipelines. It will need to have a `contributor` role on the resource group or the subscription, depending if you want to use this identity to create the resource group or not.
+I am using an User assigned identity (UAI) to authorize GitHub workflows with Azure. This approach is recommended for production environments because it provides a higher level of security compared to other approaches. You will not be required to store any credentials in the GitHub repository, which reduces the risk of exposing sensitive information. You will also avoid any credentials rotation issues that may arise from storing credentials in the GitHub repository. The bicep code provided in this repository would create the required resources and assigned it with proper permissions. For further content you could visit this [repository](https://github.com/chgeuer/github-action-via-user-assigned-managed-identity-to-keyvault-secret). Additionally, this is [documented](https://learn.microsoft.com/en-us/azure/active-directory/workload-identities/workload-identity-federation-create-trust-user-assigned-managed-identity?pivots=identity-wif-mi-methods-azp#configure-a-federated-identity-credential-on-a-user-assigned-managed-identity) in the official documentation.
 
-```azurecli
-az login
-az account set --subscription <your subscription id>
-az ad sp create-for-rbac --name <your service principal name> --role contributor --scopes /subscriptions/<your subscription id> --sdk-auth
+The information required to login into azure while can be stored in the GitHub repository as secrets (none of these are considered secrets). The following secrets are required:
+
 ```
-
-The above command will return a json object with the service principal credentials. You will need to store these credentials in a secure location. In this example we will use GitHub secrets.
-
-There multiple blog posts and documentation on how to create a service principal. You can find more information [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal).
-
-Similarly, there are multiple documents, explaining how to create a GitHub secret. You can find more information [here](https://docs.github.com/en/actions/reference/encrypted-secrets).
+AZURE_SUBSCRIPTION - The subscription id
+AZURE_TENANT - The tenant id
+AZURE_CLIENT_ID - The client id of the user assigned identity
+```
 
 
 ### Understanding the GitHub workflow 
@@ -314,7 +347,7 @@ The GitHub workflows in this repository are designed to automate the process of:
 
 - Training a machine learning model using Azure Machine Learning service.
 
-- Online and bacth deployment of the model using Azure Machine Learning service.
+- Online and batch deployment of the model using Azure Machine Learning service.
 
 This repo includes two variation of workflows, one type is leveraging composite workflow, and the other type using workflow steps. It would be up-to-you to decide which type to take.
 
@@ -379,7 +412,39 @@ As part of this repository, we have included a GitHub workflow that automates th
 ![batch deployment](/images/2023-04-30-17-24-16.png)
 
 
+#### Dispatching the workflow - External trigger
 
+All workflows can be triggered manually or via `POST` call to the GitHub Api.
+
+Per workflow file, examine the section that contains this code:
+
+```yaml
+  repository_dispatch:
+    types: [<trigger-name>]        
+```
+
+You should also replace `YOUR_GITHUB_TOKEN`, `OWNER` and `REPO` with the appropriate values.
+
+```curl
+curl -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: token YOUR_GITHUB_TOKEN" \
+  https://api.github.com/repos/OWNER/REPO/dispatches \
+  -d '{
+    "event_type": "<trigger-name>",
+    "client_payload": {
+      "resource_group": "<your rg name>",
+      "aml_workspace": "<your aml workspace>",
+      "cluster_name": "cpu-cluster",
+      "environment_file": "./data-science/models/model-1/environment/model1-train-env.yml",
+      "node_sku": "Standard_DS3_v2",
+      "cluster_size": "4",
+      "parameters": "./mlops/azureml/train/model1-pipeline.yml"
+    }
+}'
+```
+
+> Additional authentication methods to the GitHuB api exist but are not in scope of this document.
 
 ## CLI vs SDK
 

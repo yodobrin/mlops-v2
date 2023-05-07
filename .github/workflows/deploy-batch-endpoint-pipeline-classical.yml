@@ -66,7 +66,7 @@ jobs:
           node_sku: $node_sku
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION }}  
+          azure_subscription: ${{ secrets.AZURE_SUBSCRIPTION }}  
           audience: ${{ env.audience }}
           # creds: ${{ secrets.AZURE_CREDENTIALS }}
   create-endpoint:
@@ -85,7 +85,7 @@ jobs:
           endpoint_type: $endpoint_type
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION }}  
+          azure_subscription: ${{ secrets.AZURE_SUBSCRIPTION }}  
           audience: ${{ env.audience }}
           # creds: ${{ secrets.AZURE_CREDENTIALS }}
   create-deployment:
@@ -105,6 +105,6 @@ jobs:
           endpoint_type: $endpoint_type       
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION }}  
+          azure_subscription: ${{ secrets.AZURE_SUBSCRIPTION }}  
           audience: ${{ env.audience }}
           # creds: ${{ secrets.AZURE_CREDENTIALS }}

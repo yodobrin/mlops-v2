@@ -10,7 +10,7 @@ on:
       aml_workspace:
         description: 'AML workspace name'
         required: true
-        default: 'mlw-yo5-d23devv'
+        default: 'mlw-yo5-d23dev'
       deployment_file:
         description: 'Deployment file'
         required: true
