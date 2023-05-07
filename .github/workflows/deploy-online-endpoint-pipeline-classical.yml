@@ -6,11 +6,11 @@ on:
       resource_group:
         description: 'Resource group name'
         required: true
-        default: 'rg-ydamlv12-yd202304dev'
+        default: 'rg-yo5-d23dev'
       aml_workspace:
         description: 'AML workspace name'
         required: true
-        default: 'mlw-ydamlv12-yd202304dev'
+        default: 'mlw-yo5-d23dev'
       deployment_file:
         description: 'Deployment file'
         required: true
@@ -31,9 +31,16 @@ on:
         description: 'Deployment name'
         required: true
         default: 'taxi-gha-online'
+  repository_dispatch:
+    types: [trigger_online_endpoint]  
 env:
   endpoint_type: 'online-endpoint'
   deployment_type: 'online-deployment'
+  audience: api://AzureADTokenExchange
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
 
@@ -50,7 +57,11 @@ jobs:
           workspace_name: ${{ inputs.aml_workspace }}
           endpoint_name: ${{ inputs.endpoint_name }}          
           endpoint_type: $endpoint_type
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION }}  
+          audience: ${{ env.audience }}
+          # creds: ${{ secrets.AZURE_CREDENTIALS }}
   create-deployment:
     runs-on: ubuntu-latest
     needs: create-endpoint
@@ -67,7 +78,11 @@ jobs:
           endpoint_name: ${{ inputs.endpoint_name }}
           endpoint_type: $endpoint_type         
           deployment_type: $deployment_type
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION }}  
+          audience: ${{ env.audience }}
+          # creds: ${{ secrets.AZURE_CREDENTIALS }}
   allocate_traffic:
     runs-on: ubuntu-latest
     needs: create-deployment
@@ -82,5 +97,9 @@ jobs:
           workspace_name:  ${{ inputs.aml_workspace }}
           deployment_name: ${{ inputs.deployment_name }}
           traffic_allocation: "${{ inputs.deployment_name }}=${{ inputs.traffic_percentile }}"          
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION }}  
+          audience: ${{ env.audience }}
+          # creds: ${{ secrets.AZURE_CREDENTIALS }}
 

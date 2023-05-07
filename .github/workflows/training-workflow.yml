@@ -32,6 +32,8 @@ on:
         description: 'Parameters file'
         required: true
         default: './mlops/azureml/train/model1-pipeline.yml'
+  repository_dispatch:
+    types: [trigger_model_train]        
 
 permissions:
   id-token: write
