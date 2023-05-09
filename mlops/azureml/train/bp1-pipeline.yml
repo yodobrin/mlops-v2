@@ -1,0 +1,49 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+experiment_name: bp1-training
+description: Training Pipeline to train a model predicts buying propensity
+
+# <inputs_and_outputs>
+inputs:
+  subscription_id: #using local data, will create an anonymous data asset
+    type: string
+    default: "subscription_id"
+  resource_group: #using local data, will create an anonymous data asset
+    type: string
+    default: "resource_group"
+  workspace_name: #using local data, will create an anonymous data asset
+    type: string
+    default: "workspace_name"
+  input: #using local data, will create an anonymous data asset
+    type: uri_folder
+    path: ../../../data/model-1/
+  enable_monitoring: 'false'
+
+
+
+# </inputs_and_outputs>
+
+# <jobs>
+settings:
+  default_datastore: azureml:workspaceblobstore
+  default_compute: azureml:cpu-cluster
+  continue_on_step_failure: false
+
+jobs:
+  prep_data:
+    name: prep_data
+    display_name: prep-data
+    code: ../../../data-science/models/buying-propensity-1/code
+    command: >-
+      python prep.py 
+      --subscription_id ${{inputs.subscription_id}} 
+      --resource_group ${{inputs.resource_group}}
+      --workspace_name ${{inputs.workspace_name}}
+    environment: azureml:bp1-train-env@latest
+    inputs:
+      subscription_id: ${{parent.inputs.subscription_id}}
+      resource_group: ${{parent.inputs.resource_group}}
+      workspace_name: ${{parent.inputs.workspace_name}}
+
+
+  
