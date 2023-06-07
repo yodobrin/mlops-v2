@@ -15,7 +15,7 @@ on:
       environment_file:
         description: 'Environment file'
         required: true
-        default: './data-science/models/bp/environment/bp-train-env.yml'
+        default: './data-science/models/bp/environment/dependencies.yml'
       env_name:
         description: 'Environment name'
         required: true
@@ -30,6 +30,7 @@ permissions:
 
 env:
   build_type : 'conda'
+  base_image: 'mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04:latest'
   env_description: 'environment-for-training'
 
 jobs:
@@ -64,7 +65,7 @@ jobs:
           --resource_group ${{ inputs.resource_group }} \
           --build_type ${{ env.build_type }} \
           --subscription_id ${{ secrets.AZURE_SUBSCRIPTION }} \
-          --workspace_name ${{ inputs.aml_workspace }}
-          # az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }}
+          --workspace_name ${{ inputs.aml_workspace }} \
+          --base_image ${{ env.base_image }}
         shell: bash
 
