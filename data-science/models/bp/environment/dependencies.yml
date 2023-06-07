@@ -1,0 +1,20 @@
+name: bp_env
+dependencies:
+  - python=3.8
+  - scikit-learn
+  - ipykernel
+  - matplotlib
+  - pandas
+  - numpy
+  - seaborn
+  - pip
+  - pip:
+      - azureml-defaults
+      - pyarrow
+      - imbalanced-learn
+      - mlflow
+      - azureml-sdk
+      - azureml-mlflow
+      - azureml-fsspec
+      - git+https://github.com/microsoft/AzureML-Observability#subdirectory=aml-obs-client
+      - git+https://github.com/microsoft/AzureML-Observability#subdirectory=aml-obs-collector      

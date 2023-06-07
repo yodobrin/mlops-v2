@@ -1,0 +1,66 @@
+name: Register Env (build env) - Workflow
+
+
+on: 
+  workflow_dispatch:
+    inputs:
+      resource_group:
+        description: 'Resource group name'
+        required: true
+        default: 'rg-yo5-d23dev'        
+      aml_workspace:
+        description: 'AML workspace name'
+        required: true
+        default: 'mlw-yo5-d23dev'
+      environment_file:
+        description: 'Environment file'
+        required: true
+        default: './data-science/models/bp/environment/bp-train-env.yml'
+      env_name:
+        description: 'Environment name'
+        required: true
+        default: 'bp-train-env'
+
+  repository_dispatch:
+    types: [trigger_model_train]        
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  build_type : 'docker'
+  env_description: 'Build environment for training'
+
+jobs:
+  WorkflowRun:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: AZ Login
+        uses: azure/login@v1
+        with:
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION }}
+          audience: api://AzureADTokenExchange
+          # creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # - name: Install az ml
+      #   run: |
+      #     az extension add -n ml
+      #     az extension update --name ml
+      #   shell: bash
+
+      - name: Create environment(image) for training
+        run: |
+          python mlops/azureml/activities/register_environment.py \
+          --environment_name ${{ inputs.env_name }} \
+          --description ${{ env.env_description }} \
+          --env_path ${{ inputs.environment_file }} \
+          --resource_group ${{ inputs.resource_group }} \
+          --build_type ${{ env.build_type }} \
+          --subscription_id ${{ secrets.AZURE_SUBSCRIPTION }} \
+          # az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }}
+        shell: bash
+
