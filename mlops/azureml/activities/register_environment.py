@@ -19,6 +19,7 @@ def parse_args():
     parser.add_argument("--base_image", type=str, help="base image path", default="mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04")
     parser.add_argument("--subscription_id", type=str, help="subscription id")
     parser.add_argument("--resource_group", type=str, help="resource group")
+    parser.add_argument("--workspace_name", type=str, help="workspace name")
     return parser.parse_args()
 
 def main():
@@ -29,7 +30,7 @@ def main():
     try:
         kwargs = {"cloud": "AzureCloud"}
         # get a handle to the subscription
-        ml_client = MLClient(credential, args.subscription_id, args.resource_group, **kwargs)
+        ml_client = MLClient(credential, args.subscription_id, args.resource_group, args.workspace_name, **kwargs)
         # ml_client = MLClient.from_config(credential, path='config.json')
 
     except Exception as ex:

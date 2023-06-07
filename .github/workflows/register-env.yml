@@ -64,6 +64,7 @@ jobs:
           --resource_group ${{ inputs.resource_group }} \
           --build_type ${{ env.build_type }} \
           --subscription_id ${{ secrets.AZURE_SUBSCRIPTION }} \
+          --workspace_name ${{ inputs.aml_workspace }}
           # az ml environment create --file ${{ github.workspace }}/${{ inputs.environment_file }} --resource-group ${{ inputs.resource_group }} --workspace-name ${{ inputs.aml_workspace }}
         shell: bash
 
