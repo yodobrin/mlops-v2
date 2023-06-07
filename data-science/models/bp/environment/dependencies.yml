@@ -16,5 +16,3 @@ dependencies:
       - azureml-sdk
       - azureml-mlflow
       - azureml-fsspec
-      - git+https://github.com/microsoft/AzureML-Observability#subdirectory=aml-obs-client
-      - git+https://github.com/microsoft/AzureML-Observability#subdirectory=aml-obs-collector      

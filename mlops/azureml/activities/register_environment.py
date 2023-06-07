@@ -30,16 +30,15 @@ def main():
     try:
         kwargs = {"cloud": "AzureCloud"}
         # get a handle to the subscription
-        ml_client = MLClient(credential, args.subscription_id, args.resource_group, args.workspace_name, **kwargs)
-        # ml_client = MLClient.from_config(credential, path='config.json')
+        ml_client = MLClient(credential, args.subscription_id, args.resource_group, args.workspace_name, **kwargs)        
 
     except Exception as ex:
-        print("Could not find config.json or config.json is not in the right format.")
+        print(f"Unable to authenticate to workspace: {args.workspace_name} in resource group: {args.resource_group} in subscription: {args.subscription_id} ")
         print(ex)
 
     build_type = args.build_type
     if build_type == 'docker':
-        print("Using docker build contect")
+        print("Using docker build context")
         environment = Environment(
             name=args.environment_name,
             build=BuildContext(path=args.env_path),
