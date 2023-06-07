@@ -51,7 +51,10 @@ jobs:
       #     az extension add -n ml
       #     az extension update --name ml
       #   shell: bash
-
+      - name: Set up Python
+        run: |
+          pip install -r mlops/azureml/activities/requirements.txt
+        shell: bash
       - name: Create environment(image) for training
         run: |
           python mlops/azureml/activities/register_environment.py \
