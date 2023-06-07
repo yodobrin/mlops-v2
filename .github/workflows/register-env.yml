@@ -29,7 +29,7 @@ permissions:
   contents: read
 
 env:
-  build_type : 'docker'
+  build_type : 'conda'
   env_description: 'environment-for-training'
 
 jobs:
