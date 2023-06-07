@@ -30,7 +30,7 @@ permissions:
 
 env:
   build_type : 'docker'
-  env_description: 'Build environment for training'
+  env_description: 'environment-for-training'
 
 jobs:
   WorkflowRun:
