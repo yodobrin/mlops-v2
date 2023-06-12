@@ -28,24 +28,19 @@ def parse_args():
 
 
 def connect_to_aml(args):
-    """Connect to Azure ML workspace using provided cli arguments."""
-    try:
-        credential = DefaultAzureCredential()
-        # Check if given credential can get token successfully.
-        credential.get_token("https://management.azure.com/.default")
-    except Exception as ex:
-        # Fall back to InteractiveBrowserCredential in case DefaultAzureCredential not work
-        credential = InteractiveBrowserCredential()
+    
+    credential = DefaultAzureCredential()
 
     # Get a handle to workspace
-    try:
-        # ml_client to connect using local config.json
-        ml_client = MLClient.from_config(credential, path='config.json')
+    try:        
+        kwargs = {"cloud": "AzureCloud"}
+        # get a handle to the subscription
+        ml_client = MLClient(credential, args.subscription_id, args.resource_group, args.workspace_name, **kwargs)
 
     except Exception as ex:
-        print(
-            "Could not find config.json, using config.yaml refs to Azure ML workspace instead."
-        )
+        print(f"Unable to authenticate to workspace: {args.workspace_name} in resource group: {args.resource_group} in subscription: {args.subscription_id} ")
+        print(ex)
+
 
         # tries to connect using cli args if provided else using config.yaml
         ml_client = MLClient(
